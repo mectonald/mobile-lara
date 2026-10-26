@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pra Lara</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Caveat:wght@500&display=swap">
+<style>
+/* Layout: um diário noturno de uma coluna só; cada seção é uma "página" do caderno, com margens anotadas à mão. Tema único escuro por escolha (noite). */
+:root{
+  --noite:#0d1622; --mata:#12241f; --mata2:#183129; --creme:#ece3cf; --creme2:#c9bfa9;
+  --cinza:#8f9a98; --ambar:#e3a24b; --agua:#6fa3b3; --tinta:#1b1a17;
+  --f-display:"Gloock", "Georgia", serif; --f-body:"Literata", "Georgia", serif; --f-mao:"Caveat", "Comic Sans MS", cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--noite);color:var(--creme);font-family:var(--f-body);font-size:17px;line-height:1.65;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(20px, env(safe-area-inset-left,0px));padding-right:max(20px, env(safe-area-inset-right,0px))}
+section{padding-block:88px;position:relative}
+h2{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,8vw,44px);line-height:1.1;margin:0 0 8px;text-wrap:balance}
+.rotulo{font-family:var(--f-mao);color:var(--ambar);font-size:22px;display:block;margin-bottom:4px;transform:rotate(-2deg);transform-origin:left}
+p{margin:0 0 1em}
+.nota{font-family:var(--f-mao);font-size:21px;color:var(--creme2);line-height:1.3}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px dashed var(--ambar);outline-offset:4px;border-radius:4px}
+.btn{min-height:48px;padding:10px 22px;border:1px solid var(--creme2);background:transparent;border-radius:999px;cursor:pointer;font-family:var(--f-body);transition:background .3s,color .3s}
+.btn:hover{background:var(--creme);color:var(--tinta)}
+.btn-link{background:none;border:none;min-height:44px;text-decoration:underline;text-underline-offset:4px;color:var(--cinza);cursor:pointer;padding:8px 0}
+
+/* ABERTURA */
+#abertura{min-height:92vh;min-height:92svh;display:flex;align-items:center;background:radial-gradient(120% 80% at 50% 100%, var(--mata) 0%, var(--noite) 70%);overflow:hidden;transition:opacity 1.2s}
+#abertura.saiu{opacity:.25}
+#ceu{position:absolute;inset:0;width:100%;height:100%}
+.abre{position:relative;text-align:left}
+.abre .para{font-family:var(--f-mao);font-size:24px;color:var(--creme2);margin-bottom:10px}
+.abre h1{font-family:var(--f-display);font-weight:400;font-size:clamp(40px,12vw,72px);line-height:1.02;margin:0 0 30px;text-wrap:balance}
+.abre h1 em{font-style:italic;color:var(--ambar)}
+.libelula{position:absolute;right:6%;top:18%;width:84px;animation:paira 7s ease-in-out infinite}
+.libelula .asa{transform-origin:50% 50%;animation:bate .18s linear infinite alternate}
+@keyframes paira{0%,100%{transform:translate(0,0) rotate(-8deg)}50%{transform:translate(-26px,14px) rotate(4deg)}}
+@keyframes bate{to{opacity:.45}}
+
+/* CARTA */
+#carta{background:var(--noite)}
+.papel{background:var(--creme);color:var(--tinta);padding:34px 24px 26px;border-radius:2px;position:relative;box-shadow:0 30px 60px -30px #000;transform:rotate(-.6deg);
+  background-image:repeating-linear-gradient(transparent 0 31px, rgba(27,26,23,.09) 31px 32px);background-position:0 18px}
+.papel::before{content:"";position:absolute;left:22px;top:0;bottom:0;border-left:1px solid rgba(180,80,60,.28)}
+.papel p{padding-left:16px;font-size:17.5px;line-height:32px;margin-bottom:32px}
+.bloco{transition:opacity .8s, transform .8s}
+.bloco.oculto{display:none}
+.bloco.novo{animation:surge .9s ease both}
+@keyframes surge{from{opacity:0;transform:translateY(8px)}}
+.carta-ctrl{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:24px}
+.assinatura{font-family:var(--f-mao);font-size:24px;padding-left:16px;color:#4b4335}
+
+/* UNIVERSO */
+#universo{background:linear-gradient(var(--noite),var(--mata) 100%)}
+.prateleira{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.obra{min-height:170px;border:none;cursor:pointer;padding:16px 14px;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;border-radius:3px;position:relative;overflow:hidden;transition:transform .35s}
+.obra:hover,.obra[aria-expanded="true"]{transform:translateY(-4px) rotate(-1deg)}
+.obra svg{position:absolute;inset:0;width:100%;height:100%}
+.obra span{position:relative;font-family:var(--f-display);font-size:19px;line-height:1.1}
+.obra small{position:relative;font-family:var(--f-mao);font-size:18px;opacity:.85}
+.o-alaska{background:#2a3a48;color:var(--creme)}
+.o-obx{background:#c9a46a;color:#1f2a2a}
+.o-cyber{background:#121a24;color:#e8e0c6;box-shadow:inset 0 0 0 1px #3d6a72}
+.o-desen{background:#3a1f15;color:#f1d6ae}
+.reflexao{margin-top:20px;padding:22px 20px;border-left:2px solid var(--ambar);background:rgba(236,227,207,.05);min-height:96px}
+.reflexao h3{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 8px}
+.obx-extra{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.obx-extra button{min-height:44px;padding:6px 14px;border-radius:999px;border:1px dashed var(--ambar);background:none;cursor:pointer;color:var(--ambar)}
+.faisca{display:inline-block;animation:pula .6s ease}
+@keyframes pula{40%{transform:translateY(-6px) scale(1.15)}}
+
+/* ECOSSISTEMA */
+#ecossistema{background:var(--mata)}
+.lago{position:relative;margin-top:28px;aspect-ratio:3/4;max-width:100%;border-radius:4px;overflow:hidden;
+  background:linear-gradient(var(--mata) 0%, var(--mata2) 44%, #14303a 46%, #0f2430 100%)}
+.lago .onda{position:absolute;left:-10%;right:-10%;height:2px;background:rgba(111,163,179,.35);border-radius:50%;animation:onda 6s ease-in-out infinite}
+@keyframes onda{50%{transform:translateX(4%) scaleX(.94)}}
+.ser{position:absolute;width:64px;height:64px;border:none;background:none;cursor:pointer;padding:6px;border-radius:50%;transition:transform .4s}
+.ser svg{width:100%;height:100%;overflow:visible}
+.ser:hover{transform:scale(1.08)}
+.ser.tocado{animation:toque .9s ease}
+@keyframes toque{30%{transform:translateY(-8px) rotate(-6deg)}60%{transform:translateY(2px) rotate(3deg)}}
+.ser.baleia{width:110px;height:70px;border-radius:30px}
+.ser.libel svg .asa{animation:bate .2s linear infinite alternate;transform-origin:center}
+.ser.libel{animation:voa 11s ease-in-out infinite}
+@keyframes voa{0%,100%{transform:translate(0,0)}33%{transform:translate(40px,-16px)}66%{transform:translate(-20px,10px)}}
+.vaga{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--ambar);box-shadow:0 0 10px 3px rgba(227,162,75,.5);animation:pisca 4s ease-in-out infinite}
+@keyframes pisca{0%,100%{opacity:.1}50%{opacity:.9}}
+.recado{margin-top:18px;min-height:92px;font-size:17px}
+.recado strong{font-family:var(--f-display);font-weight:400;color:var(--agua);font-size:20px;display:block}
+.legenda-lago{font-size:14px;color:var(--cinza);margin-top:8px}
+
+/* FOGO */
+#fogo{background:radial-gradient(90% 60% at 50% 55%, #2a1b10 0%, var(--noite) 70%)}
+.fogueira{display:flex;flex-direction:column;align-items:center;margin-top:30px}
+#chama{width:180px;height:220px;border:none;background:none;cursor:pointer;position:relative;border-radius:50%}
+#chama svg{width:100%;height:100%;overflow:visible}
+.labareda{transform-origin:50% 100%;transition:transform 2.4s ease, opacity 2.4s ease, fill 2.4s}
+.estagio-0 .l1{animation:dança 1.6s ease-in-out infinite alternate}
+.estagio-0 .l2{animation:dança 1.2s ease-in-out infinite alternate-reverse}
+@keyframes dança{to{transform:scaleY(1.07) skewX(3deg)}}
+.estagio-1 .l1{transform:scale(.7)} .estagio-1 .l2{transform:scale(.6)}
+.estagio-2 .l1,.estagio-2 .l2{transform:scale(.35);opacity:.8}
+.estagio-3 .l1,.estagio-3 .l2{transform:scale(.18);opacity:.55}
+.brasa{fill:var(--ambar);opacity:0;transition:opacity 2s, transform 3s}
+.estagio-3 .brasa{opacity:.85}
+.estagio-3 .brasa.b1{transform:translate(-50px,-110px)} .estagio-3 .brasa.b2{transform:translate(40px,-140px)}
+.estagio-3 .brasa.b3{transform:translate(-10px,-170px)} .estagio-3 .brasa.b4{transform:translate(70px,-80px)} .estagio-3 .brasa.b5{transform:translate(-80px,-60px)}
+.estagio-3 .brasa{animation:pisca 4s ease-in-out infinite 2s}
+.fogo-texto{min-height:150px;margin-top:22px;text-align:center;max-width:30em}
+.fogo-texto p{transition:opacity .8s}
+.passo{font-family:var(--f-mao);color:var(--cinza);font-size:19px;margin-top:6px}
+
+/* CAMINHO */
+#caminho{background:var(--noite)}
+.trilha{position:relative;margin-top:36px;padding-left:44px}
+.trilha::before{content:"";position:absolute;left:14px;top:8px;bottom:8px;border-left:2px dashed var(--cinza);opacity:.5}
+.marco{position:relative;margin-bottom:44px}
+.marco::before{content:"";position:absolute;left:-37px;top:7px;width:14px;height:14px;border-radius:50%;background:var(--noite);border:2px solid var(--creme2)}
+.marco.agora::before{background:var(--ambar);border-color:var(--ambar);box-shadow:0 0 14px var(--ambar)}
+.marco h3{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 6px}
+.marco .bifurca{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.marco .bifurca span{font-family:var(--f-mao);font-size:19px;color:var(--agua);border-bottom:1px solid rgba(111,163,179,.4)}
+.aparece{opacity:1;transform:none;transition:opacity 1s, transform 1s}
+.js .aparece.espera{opacity:.15;transform:translateY(14px)}
+
+/* LEMBRANÇAS */
+#lembrancas{background:linear-gradient(var(--noite),var(--mata))}
+.antes-depois{display:grid;gap:18px;margin:30px 0}
+.bilhete{background:var(--creme);color:var(--tinta);padding:20px 18px;position:relative;box-shadow:0 18px 30px -18px #000}
+.bilhete::before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:20px;margin-left:-35px;background:rgba(201,191,169,.75);transform:rotate(-3deg)}
+.bilhete.um{transform:rotate(-2deg);max-width:86%}
+.bilhete.dois{transform:rotate(1.5deg);margin-left:auto;max-width:92%}
+.bilhete .nota{color:#4b4335}
+.arquivo{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;margin-top:22px}
+.ficha{min-height:120px;background:#e2d7bd;color:var(--tinta);border:none;cursor:pointer;padding:14px 12px;text-align:left;font-family:var(--f-mao);font-size:20px;line-height:1.2;position:relative;transition:transform .3s}
+.ficha:nth-child(odd){transform:rotate(-1.5deg)} .ficha:nth-child(even){transform:rotate(1.2deg)}
+.ficha:hover{transform:rotate(0) translateY(-3px)}
+.ficha .dobra{display:block;font-family:var(--f-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6d6350;margin-bottom:6px}
+.ficha.vazia{background:transparent;border:1px dashed var(--cinza);color:var(--cinza)}
+.ficha-aberta{margin-top:18px;padding:18px;border-left:2px solid var(--creme2);min-height:60px}
+
+/* FINAL */
+#final{background:var(--mata);padding-bottom:60px}
+#final .grande{font-family:var(--f-display);font-size:clamp(24px,6.5vw,32px);line-height:1.3;text-wrap:balance}
+.assina-final{font-family:var(--f-mao);font-size:26px;color:var(--ambar);margin-top:30px}
+footer{padding-block:28px 40px;color:var(--cinza);font-size:13px;text-align:center;background:var(--mata)}
+
+/* navegação */
+#indice{position:fixed;right:calc(10px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:40;display:none}
+#indice.ativo{display:block}
+#indice > button{width:48px;height:48px;border-radius:50%;border:1px solid var(--creme2);background:rgba(13,22,34,.88);cursor:pointer;font-family:var(--f-mao);font-size:20px}
+#indice ul{list-style:none;margin:0 0 10px;padding:10px;background:rgba(13,22,34,.96);border:1px solid rgba(201,191,169,.3);border-radius:8px;position:absolute;right:0;bottom:56px;width:210px}
+#indice a{display:block;padding:10px 8px;color:var(--creme);text-decoration:none;min-height:44px}
+#indice a:hover{color:var(--ambar)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .js .aparece.espera{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav id="indice" aria-label="Páginas do caderno">
+  <ul id="indice-lista" hidden>
+    <li><a href="#carta">a carta</a></li>
+    <li><a href="#universo">o seu universo</a></li>
+    <li><a href="#ecossistema">um pequeno lago</a></li>
+    <li><a href="#fogo">o fogo</a></li>
+    <li><a href="#caminho">o caminho</a></li>
+    <li><a href="#lembrancas">o que eu guardo</a></li>
+    <li><a href="#final">por último</a></li>
+  </ul>
+  <button id="indice-btn" aria-expanded="false" aria-controls="indice-lista" aria-label="Abrir índice">≡</button>
+</nav>
+
+<main>
+<section id="abertura" aria-label="Abertura">
+  <canvas id="ceu" aria-hidden="true"></canvas>
+  <svg class="libelula" viewBox="0 0 100 60" aria-hidden="true">
+    <g fill="rgba(180,215,225,.35)" stroke="rgba(220,235,240,.6)" stroke-width=".6">
+      <ellipse class="asa" cx="34" cy="20" rx="22" ry="6" transform="rotate(-14 34 20)"/>
+      <ellipse class="asa" cx="66" cy="20" rx="22" ry="6" transform="rotate(14 66 20)"/>
+      <ellipse class="asa" cx="36" cy="30" rx="18" ry="5" transform="rotate(10 36 30)"/>
+      <ellipse class="asa" cx="64" cy="30" rx="18" ry="5" transform="rotate(-10 64 30)"/>
+    </g>
+    <rect x="48.5" y="16" width="3" height="40" rx="1.5" fill="#6fa3b3"/><circle cx="50" cy="15" r="4" fill="#8fc0cc"/>
+  </svg>
+  <div class="wrap abre">
+    <p class="para" id="txt-abertura-para"></p>
+    <h1 id="txt-abertura-titulo"></h1>
+    <button class="btn" id="entrar">entra, Lara</button>
+  </div>
+</section>
+
+<section id="carta" aria-labelledby="carta-t">
+  <div class="wrap">
+    <span class="rotulo">página um</span>
+    <h2 id="carta-t">Uma carta, aos poucos</h2>
+    <p class="nota" style="margin-bottom:26px">sem pressa. dá pra ler no seu tempo.</p>
+    <article class="papel" id="papel" aria-live="polite"></article>
+    <div class="carta-ctrl">
+      <button class="btn" id="carta-continuar">continuar</button>
+      <button class="btn-link" id="carta-tudo">mostrar a carta inteira</button>
+    </div>
+  </div>
+</section>
+
+<section id="universo" aria-labelledby="uni-t">
+  <div class="wrap">
+    <span class="rotulo">página dois</span>
+    <h2 id="uni-t">Histórias que você sentiu</h2>
+    <p>Toca em cada uma. Não tem pergunta, nem prova. Só o que eu lembro.</p>
+    <div class="prateleira" id="prateleira"></div>
+    <div class="reflexao" id="reflexao" aria-live="polite"><p class="nota" style="margin:0">escolhe uma lombada ali em cima ↑</p></div>
+  </div>
+</section>
+
+<section id="ecossistema" aria-labelledby="eco-t">
+  <div class="wrap">
+    <span class="rotulo">página três</span>
+    <h2 id="eco-t">Um pequeno lago à noite</h2>
+    <p id="txt-eco-intro"></p>
+    <div class="lago" id="lago">
+      <div class="onda" style="top:52%"></div><div class="onda" style="top:64%;animation-delay:-2s"></div><div class="onda" style="top:79%;animation-delay:-4s"></div>
+    </div>
+    <p class="legenda-lago">toque nos bichos. a libélula voa, mas dá pra alcançar.</p>
+    <div class="recado" id="recado" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="fogo" aria-labelledby="fogo-t">
+  <div class="wrap">
+    <span class="rotulo">página quatro</span>
+    <h2 id="fogo-t">Sobre fogo</h2>
+    <div class="fogueira">
+      <button id="chama" class="estagio-0" aria-label="Tocar na chama para ela descansar">
+        <svg viewBox="-100 -230 200 240" aria-hidden="true">
+          <defs><radialGradient id="halo"><stop offset="0" stop-color="#e3a24b" stop-opacity=".35"/><stop offset="1" stop-color="#e3a24b" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="0" cy="-40" r="95" fill="url(#halo)"/>
+          <path class="labareda l1" d="M0,0 C-48,-10 -52,-70 -22,-112 C-14,-80 4,-84 0,-150 C34,-110 56,-60 40,-20 C34,-6 18,0 0,0Z" fill="#d9822f"/>
+          <path class="labareda l2" d="M0,0 C-24,-6 -26,-44 -6,-70 C0,-50 12,-56 10,-92 C28,-60 32,-30 20,-10 C14,-2 8,0 0,0Z" fill="#f1c47a"/>
+          <circle class="brasa b1" cx="0" cy="-20" r="3"/><circle class="brasa b2" cx="0" cy="-20" r="2.4"/><circle class="brasa b3" cx="0" cy="-20" r="2"/><circle class="brasa b4" cx="0" cy="-20" r="2.6"/><circle class="brasa b5" cx="0" cy="-20" r="2.2"/>
+          <path d="M-60,6 L60,-4 M-55,-4 L58,8" stroke="#4a3426" stroke-width="9" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="fogo-texto" aria-live="polite"><p id="fogo-frase"></p><p class="passo" id="fogo-passo"></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="caminho" aria-labelledby="cam-t">
+  <div class="wrap">
+    <span class="rotulo">página cinco</span>
+    <h2 id="cam-t">O caminho que você escolheu</h2>
+    <div class="trilha" id="trilha"></div>
+  </div>
+</section>
+
+<section id="lembrancas" aria-labelledby="lem-t">
+  <div class="wrap">
+    <span class="rotulo">página seis</span>
+    <h2 id="lem-t">Coisas que eu não esqueci</h2>
+    <div class="antes-depois">
+      <div class="bilhete um"><p class="nota" id="txt-antes" style="margin:0"></p></div>
+      <div class="bilhete dois"><p id="txt-depois" style="margin:0"></p></div>
+    </div>
+    <p id="txt-guardo"></p>
+    <div class="arquivo" id="arquivo"></div>
+    <div class="ficha-aberta" id="ficha-aberta" aria-live="polite" hidden></div>
+  </div>
+</section>
+
+<section id="final" aria-labelledby="fim-t">
+  <div class="wrap">
+    <span class="rotulo">última página</span>
+    <h2 id="fim-t" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Por último</h2>
+    <div id="txt-final"></div>
+    <p class="assina-final" id="txt-assinatura"></p>
+    <button class="btn-link" id="voltar-topo">voltar pro começo</button>
+  </div>
+</section>
+</main>
+<footer>feito à mão, só pra você · nada aqui é guardado nem enviado a lugar nenhum</footer>
+
+<script>
+/* ===================================================================
+   CONTEÚDO — edite os textos aqui. Nada do texto mora nos componentes.
+   =================================================================== */
+const CONTEUDO = {
+  abertura: { para: "para a garota que às vezes esquece", titulo: "que pode ser <em>ela mesma</em>." },
+
+  carta: [
+    "Lara,",
+    "Às vezes eu sinto saudade da Lara. Não porque a Maria Eduarda tenha deixado de existir, nem porque você me deva alguma versão sua. É porque eu gosto de ver você quando não precisa se diminuir, se esconder ou pedir licença para ser quem é.",
+    "Maria Eduarda e Lara não são uma verdadeira e outra falsa. São você. Eu só reconheço a Lara naquele jeito espontâneo, meio sem filtro, de quando você esquece de se vigiar.",
+    "Eu não sei o que anda pesando, e não estou aqui para adivinhar. Esse site não é uma cobrança nem um pedido de explicação. É mais um lugar para você lembrar de umas coisas que eu vejo em você.",
+    "Você não precisa se tornar outra pessoa para merecer espaço no mundo. E não precisa provar para ninguém que continua sendo você."
+  ],
+  cartaAssinatura: "— continua aí embaixo, quando quiser.",
+
+  universo: [
+    { id:"alaska", classe:"o-alaska", titulo:"Quem é Você, Alaska?", sub:"a gente viu junto",
+      texto:"A gente assistiu junto, e você chorou. Eu lembro disso como uma das coisas mais bonitas sobre você: uma história chega em você e mexe de verdade. Sentir tanto não é exagero nem fraqueza. É o jeito que você presta atenção no mundo. Você não precisa esconder isso para ser forte." },
+    { id:"obx", classe:"o-obx", titulo:"Outer Banks", sub:"quantos episódios? tanto faz",
+      texto:"Nunca importou quantos episódios você tinha visto. O que eu lembro é do jeito que você falava da série: rápido, animada, querendo contar tudo de uma vez. Gosto de ver você empolgada com as coisas, inclusive as que alguém de fora chamaria de pequenas. Para mim, nunca foram.",
+      extra:["pode contar de novo","eu ouço","sem resumo, com detalhe"] },
+    { id:"cyber", classe:"o-cyber", titulo:"Cyberpunk: Edgerunners", sub:"mais uma vez, as lágrimas",
+      texto:"Você chorou com essa também. E eu acho que isso diz uma coisa: você não ficou dura para conseguir encarar o mundo. Dá para enfrentar as coisas sem virar indiferente. Sua sensibilidade não atrapalha a sua coragem. Faz parte dela." },
+    { id:"desen", classe:"o-desen", titulo:"Desenfreados", sub:"M. Kelly · aquele que você sempre conta",
+      texto:"Você sempre me falou desse livro, e de fogo. De se queimar, de acabar queimando alguém. Eu guardei isso. Tem uma página mais abaixo só sobre isso, com calma." }
+  ],
+
+  ecoIntro: "Você olha para bicho com uma curiosidade que muita gente perdeu. Baleia, gato, coelho, libélula, inseto que ninguém para pra ver. Isso é seu, faça faculdade do que fizer.",
+  seres: [
+    { id:"baleia", nome:"baleia", x:8, y:66, msg:"Ela canta para quem está longe, sem saber se alguém escuta. E continua cantando. Não precisa de plateia para valer a pena." },
+    { id:"gato", nome:"gato", x:66, y:30, msg:"Um gato nunca pede desculpa por ocupar o lugar mais confortável da casa. Você também pode ocupar espaço." },
+    { id:"coelho", nome:"coelho", x:14, y:30, msg:"Coelho é cuidadoso, desconfia, se esconde quando precisa. E isso não faz dele menos curioso. Dá para ser os dois." },
+    { id:"libel", nome:"libélula", x:46, y:12, msg:"A libélula passa muito tempo debaixo d'água antes de voar. Ninguém diz que esse tempo foi perdido. Era só outra fase de ser ela." },
+    { id:"inseto", nome:"besourinho", x:70, y:80, msg:"Um bicho minúsculo, que quase ninguém repara. Você repararia. Esse jeito de notar o que é pequeno é raro, e é bonito." }
+  ],
+
+  fogo: [
+    { frase:"Você já me falou tantas vezes sobre fogo, sobre se queimar e sobre acabar queimando alguém.", passo:"toca na chama" },
+    { frase:"Eu espero que, em algum momento, você descubra que não precisa viver em chamas para provar que sente alguma coisa.", passo:"de novo, devagar" },
+    { frase:"O calor continua. Só que agora dá pra chegar perto sem se machucar.", passo:"mais uma vez" },
+    { frase:"Você não precisa apagar o que existe em você. Só não precisa estar em chamas o tempo inteiro.", passo:"(pode ficar aqui um pouco) · tocar de novo acende outra vez" }
+  ],
+
+  caminho: [
+    { titulo:"quando o futuro era uma pergunta grande demais", texto:"Eu lembro dessa época. Parecia que todo mundo esperava uma resposta pronta de você." },
+    { titulo:"você escolheu", texto:"Educação Física. Você escolheu um caminho, entrou na faculdade e começou a encontrar coisas de que gosta nele. Foi muito bom acompanhar isso." },
+    { titulo:"o que ainda não sabe", texto:"Escolher não quer dizer ter tudo resolvido. Você não precisa saber onde isso termina. Ninguém sabe, só fingem melhor.", bifurca:["pode continuar","pode desviar","pode mudar de ideia"] },
+    { titulo:"agora", texto:"Você foi descobrindo possibilidades enquanto andava. Isso já é bastante. E o que você ama no mundo vivo vem junto, em qualquer caminho.", agora:true }
+  ],
+
+  lembrancasAntes: "\"a gente provavelmente nem vai conversar por uma semana\"",
+  lembrancasDepois: "Você achou que a gente talvez nem fosse conversar por uma semana. E, de alguma maneira, acabou deixando comigo lembranças que eu não saberia explicar para outra pessoa sem parecer que são detalhes pequenos. Mas eu lembro. Lembro porque vieram de você.",
+  lembrancasGuardo: "Porque, em algum momento, você confiou em mim o suficiente para me contar coisas que não estavam na superfície. Isso fica guardado comigo, e só comigo. Não é para cobrar nada nem para usar contra você. É só a prova de que eu estava prestando atenção.",
+
+  /* ---------------------------------------------------------------
+     LEMBRANÇAS REAIS — preencha você mesmo.
+     Cada item vira uma fichinha no arquivo. "frente" é o que aparece
+     fechado; "dentro" é o que aparece ao tocar.
+     Itens com vazio:true aparecem como fichas em branco (não apague
+     se quiser manter o espaço). Escreva só o que você se sentir bem
+     em ela ler — e nada que ela não queira ver escrito.
+     --------------------------------------------------------------- */
+  lembrancas: [
+    { frente:"Alaska", dentro:"A noite em que a gente assistiu Quem é Você, Alaska? junto, e você chorou." },
+    { frente:"Outer Banks", dentro:"Você contando da série toda animada, falando rápido." },
+    { frente:"Desenfreados", dentro:"Todas as vezes que você me falou desse livro." },
+    { frente:"a faculdade", dentro:"Quando você começou Educação Física e passou a gostar." },
+    { vazio:true, frente:"(espaço pra uma lembrança)", dentro:"" },
+    { vazio:true, frente:"(espaço pra outra)", dentro:"" }
+  ],
+
+  final: [
+    "Eu não sinto falta de uma versão perfeita sua. Sinto falta de te ver à vontade para ser você.",
+    "Da garota que se empolga, que sente as histórias, que fala dos animais, que descobre coisas novas, que às vezes não sabe para onde está indo e mesmo assim continua.",
+    "Você não precisa ser essa garota todos os dias. Só espero que nunca acredite que precisa deixá-la para trás.",
+    "Não precisa responder nada."
+  ],
+  assinatura: "com carinho, de alguém que presta atenção em você"
+};
+
+/* ============================ COMPONENTES ============================ */
+document.documentElement.classList.add('js');
+const $ = s => document.querySelector(s);
+const el = (tag, attrs={}, html="") => { const e=document.createElement(tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(html) e.innerHTML=html; return e; };
+const semMovimento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Abertura */
+$('#txt-abertura-para').textContent = CONTEUDO.abertura.para;
+$('#txt-abertura-titulo').innerHTML = CONTEUDO.abertura.titulo;
+$('#entrar').addEventListener('click', () => {
+  $('#abertura').classList.add('saiu');
+  $('#indice').classList.add('ativo');
+  $('#carta').scrollIntoView({behavior: semMovimento?'auto':'smooth'});
+  setTimeout(()=>$('#carta-continuar').focus({preventScroll:true}), 900);
+});
+
+/* Céu: poucas estrelas e vaga-lumes, desenhado com pausa fora de tela */
+(function ceu(){
+  const c=$('#ceu'), ctx=c.getContext('2d'); let w,h,pts=[],vis=true;
+  function tam(){ const r=devicePixelRatio||1; w=c.clientWidth; h=c.clientHeight; c.width=w*r; c.height=h*r; ctx.setTransform(r,0,0,r,0,0);
+    pts=Array.from({length:Math.round(w/9)},(_,i)=>({x:Math.random()*w,y:Math.random()*h*(i%5?0.6:1),r:Math.random()*1.2+.3,f:i%5===0,p:Math.random()*6.3})); }
+  function quadro(t){ ctx.clearRect(0,0,w,h);
+    for(const s of pts){ const a=s.f?(Math.sin(t/900+s.p)+1)/2:.35+.3*Math.sin(t/2000+s.p);
+      ctx.fillStyle=s.f?`rgba(227,162,75,${a*.8})`:`rgba(236,227,207,${a})`;
+      const y=s.f?s.y+Math.sin(t/1700+s.p)*6:s.y; ctx.beginPath(); ctx.arc(s.x,y,s.f?1.8:s.r,0,7); ctx.fill(); }
+    if(vis && !semMovimento) requestAnimationFrame(quadro); }
+  tam(); addEventListener('resize',tam);
+  new IntersectionObserver(e=>{ vis=e[0].isIntersecting; if(vis) requestAnimationFrame(quadro); }).observe(c);
+  requestAnimationFrame(quadro);
+})();
+
+/* Carta */
+(function carta(){
+  const papel=$('#papel'); let mostrados=1;
+  CONTEUDO.carta.forEach((t,i)=>{ const p=el('p',{class:'bloco'+(i? ' oculto':'')}); p.textContent=t; papel.appendChild(p); });
+  const ass=el('p',{class:'assinatura bloco oculto'}); ass.textContent=CONTEUDO.cartaAssinatura; papel.appendChild(ass);
+  const blocos=[...papel.children], btn=$('#carta-continuar'), tudo=$('#carta-tudo');
+  function fim(){ btn.textContent='seguir para a próxima página'; tudo.hidden=true; btn.onclick=()=>$('#universo').scrollIntoView({behavior:semMovimento?'auto':'smooth'}); }
+  btn.onclick=()=>{ const b=blocos[mostrados]; if(!b) return; b.classList.remove('oculto'); b.classList.add('novo'); mostrados++; if(mostrados>=blocos.length) fim(); };
+  tudo.onclick=()=>{ blocos.forEach(b=>b.classList.remove('oculto')); mostrados=blocos.length; fim(); };
+})();
+
+/* Universo: capas originais em SVG simples */
+(function universo(){
+  const arte={
+    alaska:'<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 70 Q50 55 100 70 V100 H0Z" fill="#1d2a36"/><circle cx="72" cy="26" r="9" fill="#ece3cf" opacity=".5"/><path d="M20 75 l0 -14 M30 72 l0 -18" stroke="#ece3cf" stroke-width=".8" opacity=".5"/></svg>',
+    obx:'<svg viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="78" cy="24" r="14" fill="#efd39a"/><path d="M0 62 Q25 54 50 62 T100 62 V100 H0Z" fill="#3f7f86"/><path d="M0 74 Q25 66 50 74 T100 74" stroke="#ece3cf" fill="none" stroke-width="1.2" opacity=".7"/></svg>',
+    cyber:'<svg viewBox="0 0 100 100" preserveAspectRatio="none"><g fill="#1f2c3a"><rect x="6" y="30" width="14" height="70"/><rect x="24" y="14" width="12" height="86"/><rect x="40" y="40" width="16" height="60"/><rect x="62" y="22" width="12" height="78"/><rect x="78" y="46" width="16" height="54"/></g><g fill="#6fa3b3" opacity=".7"><rect x="27" y="22" width="2" height="2"/><rect x="31" y="34" width="2" height="2"/><rect x="65" y="30" width="2" height="2"/><rect x="69" y="50" width="2" height="2"/><rect x="44" y="50" width="2" height="2"/></g><circle cx="50" cy="12" r="5" fill="#e3a24b" opacity=".55"/></svg>',
+    desen:'<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 22 C38 40 42 50 50 58 C58 50 62 40 50 22Z" fill="#e3a24b" opacity=".8"/><path d="M50 36 C45 46 47 51 50 55 C53 51 55 46 50 36Z" fill="#f1d6ae"/></svg>'
+  };
+  const box=$('#prateleira'), ref=$('#reflexao'); let btns=[];
+  CONTEUDO.universo.forEach(o=>{
+    const b=el('button',{class:'obra '+o.classe,'aria-expanded':'false','aria-controls':'reflexao'},arte[o.id]+`<span>${o.titulo}</span><small>${o.sub}</small>`);
+    b.onclick=()=>{
+      const aberto=b.getAttribute('aria-expanded')==='true';
+      btns.forEach(x=>x.setAttribute('aria-expanded','false'));
+      if(aberto){ ref.innerHTML='<p class="nota" style="margin:0">escolhe uma lombada ali em cima ↑</p>'; return; }
+      b.setAttribute('aria-expanded','true');
+      ref.innerHTML=`<h3>${o.titulo}</h3><p>${o.texto}</p>`;
+      if(o.id==='desen'){ const l=el('button',{class:'btn-link'}); l.textContent='ir para a página do fogo'; l.onclick=()=>$('#fogo').scrollIntoView({behavior:semMovimento?'auto':'smooth'}); ref.appendChild(l); }
+      if(o.extra){ const w=el('div',{class:'obx-extra'}); o.extra.forEach(t=>{ const x=el('button'); x.textContent=t; x.onclick=()=>{ x.classList.remove('faisca'); void x.offsetWidth; x.classList.add('faisca'); x.textContent='✦ '+t.replace(/^✦ /,''); }; w.appendChild(x); }); ref.appendChild(w); }
+    };
+    btns.push(b); box.appendChild(b);
+  });
+})();
+
+/* Ecossistema */
+(function lago(){
+  $('#txt-eco-intro').textContent=CONTEUDO.ecoIntro;
+  const desenho={
+    baleia:'<svg viewBox="0 0 110 60"><path d="M6 34 C10 14 60 10 86 28 C92 22 100 16 106 18 C102 26 100 32 104 40 C96 40 92 36 86 34 C64 52 20 54 6 34Z" fill="#3e6b7a"/><path d="M14 38 C34 46 60 46 80 36" stroke="#9fc6d1" stroke-width="1.5" fill="none" opacity=".6"/><circle cx="24" cy="28" r="2" fill="#0d1622"/></svg>',
+    gato:'<svg viewBox="0 0 60 60"><path d="M14 50 C10 30 16 22 22 20 L20 8 L28 16 L36 16 L44 8 L42 22 C48 26 50 36 46 50Z" fill="#26231f"/><circle cx="26" cy="26" r="2.2" fill="#e3a24b"/><circle cx="38" cy="26" r="2.2" fill="#e3a24b"/><path d="M46 46 Q58 40 54 28" stroke="#26231f" stroke-width="4" fill="none" stroke-linecap="round"/></svg>',
+    coelho:'<svg viewBox="0 0 60 60"><ellipse cx="22" cy="10" rx="4" ry="12" fill="#c9bfa9" transform="rotate(-10 22 10)"/><ellipse cx="34" cy="10" rx="4" ry="12" fill="#c9bfa9" transform="rotate(8 34 10)"/><ellipse cx="30" cy="40" rx="16" ry="14" fill="#ece3cf"/><circle cx="28" cy="26" r="9" fill="#ece3cf"/><circle cx="25" cy="25" r="1.4" fill="#1b1a17"/></svg>',
+    libel:'<svg viewBox="0 0 60 60"><g fill="rgba(180,215,225,.4)" stroke="#b9dbe3" stroke-width=".6"><ellipse class="asa" cx="18" cy="22" rx="14" ry="4" transform="rotate(-12 18 22)"/><ellipse class="asa" cx="42" cy="22" rx="14" ry="4" transform="rotate(12 42 22)"/><ellipse class="asa" cx="19" cy="29" rx="12" ry="3.4" transform="rotate(10 19 29)"/><ellipse class="asa" cx="41" cy="29" rx="12" ry="3.4" transform="rotate(-10 41 29)"/></g><rect x="28.8" y="18" width="2.4" height="34" rx="1.2" fill="#6fa3b3"/><circle cx="30" cy="17" r="3.2" fill="#8fc0cc"/></svg>',
+    inseto:'<svg viewBox="0 0 60 60"><path d="M22 22 L14 14 M38 22 L46 14 M20 32 L10 32 M40 32 L50 32 M22 42 L14 50 M38 42 L46 50" stroke="#8f9a98" stroke-width="1.6"/><ellipse cx="30" cy="34" rx="11" ry="14" fill="#4c6b3a"/><path d="M30 20 V48" stroke="#12241f" stroke-width="1"/><circle cx="30" cy="19" r="5" fill="#2c3f24"/></svg>'
+  };
+  const lago=$('#lago'), rec=$('#recado');
+  for(let i=0;i<9;i++){ const v=el('span',{class:'vaga','aria-hidden':'true'}); v.style.left=(8+Math.random()*84)+'%'; v.style.top=(6+Math.random()*38)+'%'; v.style.animationDelay=(-Math.random()*4)+'s'; lago.appendChild(v); }
+  CONTEUDO.seres.forEach(s=>{
+    const b=el('button',{class:'ser '+s.id,'aria-label':'Tocar na '+s.nome.replace('gato','gato').replace(/^(gato|coelho|besourinho)$/,'')+s.nome}, desenho[s.id]);
+    b.setAttribute('aria-label', s.nome);
+    b.style.left=s.x+'%'; b.style.top=s.y+'%';
+    b.onclick=()=>{ b.classList.remove('tocado'); void b.offsetWidth; b.classList.add('tocado'); rec.innerHTML=`<strong>${s.nome}</strong>${s.msg}`; };
+    lago.appendChild(b);
+  });
+  // a baleia mais à esquerda, garantindo que caiba em 360px
+  rec.innerHTML='<p class="nota" style="margin:0">tem cinco bichos aí. todos respondem.</p>';
+})();
+
+/* Fogo */
+(function fogo(){
+  const ch=$('#chama'), fr=$('#fogo-frase'), ps=$('#fogo-passo'); let e=0;
+  function mostra(){ const f=CONTEUDO.fogo[e]; fr.textContent=f.frase; ps.textContent=f.passo; ch.className='estagio-'+e;
+    ch.setAttribute('aria-label', e===3?'Acender a chama de novo':'Tocar na chama para ela descansar'); }
+  ch.onclick=()=>{ e=(e+1)%CONTEUDO.fogo.length; mostra(); };
+  mostra();
+})();
+
+/* Caminho */
+(function caminho(){
+  const t=$('#trilha');
+  CONTEUDO.caminho.forEach(m=>{
+    const d=el('div',{class:'marco aparece espera'+(m.agora?' agora':'')});
+    d.innerHTML=`<h3>${m.titulo}</h3><p>${m.texto}</p>`+(m.bifurca?`<div class="bifurca">${m.bifurca.map(x=>`<span>${x}</span>`).join('')}</div>`:'');
+    t.appendChild(d);
+  });
+  const marcos=[...t.children];
+  if('IntersectionObserver' in window && !semMovimento){
+    const io=new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.remove('espera'); io.unobserve(x.target);} }),{rootMargin:'0px 0px -15% 0px'});
+    marcos.forEach(m=>io.observe(m));
+  } else marcos.forEach(m=>m.classList.remove('espera'));
+})();
+
+/* Lembranças */
+(function lembrancas(){
+  $('#txt-antes').textContent=CONTEUDO.lembrancasAntes;
+  $('#txt-depois').textContent=CONTEUDO.lembrancasDepois;
+  $('#txt-guardo').textContent=CONTEUDO.lembrancasGuardo;
+  const arq=$('#arquivo'), ab=$('#ficha-aberta'); let atual=null;
+  CONTEUDO.lembrancas.forEach((l,i)=>{
+    const b=el('button',{class:'ficha'+(l.vazio?' vazia':''),'aria-expanded':'false','aria-controls':'ficha-aberta'});
+    b.innerHTML=`<span class="dobra">nº ${String(i+1).padStart(2,'0')}</span>${l.frente}`;
+    b.onclick=()=>{
+      arq.querySelectorAll('.ficha').forEach(x=>x.setAttribute('aria-expanded','false'));
+      if(atual===i){ ab.hidden=true; atual=null; return; }
+      atual=i; b.setAttribute('aria-expanded','true'); ab.hidden=false;
+      ab.innerHTML= l.vazio ? '<p class="nota" style="margin:0">essa ficha está em branco de propósito. algumas coisas que você me contou ficam só comigo.</p>' : `<p style="margin:0">${l.dentro}</p>`;
+    };
+    arq.appendChild(b);
+  });
+})();
+
+/* Final e navegação */
+$('#txt-final').innerHTML=CONTEUDO.final.map((t,i)=>`<p class="${i===0?'grande':''}">${t}</p>`).join('');
+$('#txt-assinatura').textContent=CONTEUDO.assinatura;
+$('#voltar-topo').onclick=()=>{ $('#abertura').classList.remove('saiu'); $('#abertura').scrollIntoView({behavior:semMovimento?'auto':'smooth'}); $('#entrar').focus({preventScroll:true}); };
+(function indice(){
+  const b=$('#indice-btn'), l=$('#indice-lista');
+  const fecha=()=>{ l.hidden=true; b.setAttribute('aria-expanded','false'); };
+  b.onclick=()=>{ const ab=l.hidden; l.hidden=!ab; b.setAttribute('aria-expanded',String(ab)); };
+  l.addEventListener('click',e=>{ if(e.target.tagName==='A') fecha(); });
+  addEventListener('keydown',e=>{ if(e.key==='Escape') fecha(); });
+  new IntersectionObserver(es=>{ if(!es[0].isIntersecting) $('#indice').classList.add('ativo'); }).observe($('#abertura'));
+})();
+</script>
+</body>
+</html>
