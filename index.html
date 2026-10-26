@@ -3,116 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Caderno da Lara</title>
+<title>Bom dia, Lara</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Courier+Prime&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,800;1,9..144,400&family=Atkinson+Hyperlegible:wght@400;700&family=Courier+Prime&display=swap">
 <style>
-/* Layout: um zine impresso em risografia, folheado capítulo por capítulo como um livrinho de bolso (um capítulo por vez, arrasta pro lado). Clima de mato: verde-musgo, folha, capim seco e terra, com capim e folhas nas bordas. Tema único claro por escolha. */
+/* Layout: uma manhã no mato que vai clareando conforme ela desce a página. Céu fixo atrás (madrugada → manhã), conteúdo numa coluna estreita por cima, cada parada com uma coisinha pra tocar. */
 :root{
-  --papel:#e8eddc; --papel2:#d3ddc0; --tinta:#21402a; --tinta-leve:#5e8452; --sol:#cdbf5a; --musgo:#3d6b2c; --grafite:#1f261c; --cinza:#5f6b57;
-  --terra:#7a5a3a; --folha:#8fb36a;
-  --f-display:"Bricolage Grotesque", "Arial Narrow", sans-serif;
-  --f-texto:"Newsreader", "Georgia", serif;
-  --f-maquina:"Courier Prime", "Courier New", monospace;
-  color-scheme:light;
+  --noite:#16261d; --aurora:#d9c98a; --manha:#e7eed8; --folha:#8fb36a; --musgo:#3d6b2c; --mata:#21402a; --terra:#7a5a3a; --capim:#cdbf5a;
+  --texto:#1d2a1f; --suave:#4f5e4b; --papel:#f2f4e8; --papel2:#dfe6cf; --tinta-leve:#5e8452; --sol:#e9c45a; --grafite:#1d2a1f; --cinza:#5f6b57;
+  --f-display:"Fraunces", "Georgia", serif; --f-texto:"Atkinson Hyperlegible", "Verdana", sans-serif; --f-maquina:"Courier Prime", "Courier New", monospace;
+  --dia:0; color-scheme:light;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
-body{background:var(--papel);color:var(--grafite);font-family:var(--f-texto);font-size:18px;line-height:1.62;margin:0;overflow:hidden}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.18;mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='1'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .3 0 0 0 0 .35 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body{margin:0;background:var(--manha);color:var(--texto);font-family:var(--f-texto);font-size:17.5px;line-height:1.65;overflow-x:hidden}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--sol);outline-offset:3px}
-p{margin:0 0 1.05em} em{font-style:italic}
+p{margin:0 0 1em}
 
-/* clima de mato */
-body{background:
-  radial-gradient(60% 40% at 0% 0%, rgba(143,179,106,.28), transparent 70%),
-  radial-gradient(50% 35% at 100% 30%, rgba(61,107,44,.16), transparent 70%),
-  radial-gradient(70% 40% at 50% 110%, rgba(122,90,58,.14), transparent 70%), var(--papel)}
-.capim{position:absolute;left:0;right:0;bottom:0;height:46px;pointer-events:none;z-index:4;opacity:.9;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='46'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M4 46 Q8 22 2 6' stroke='%233d6b2c' stroke-width='2'/%3E%3Cpath d='M12 46 Q14 28 22 14' stroke='%235e8452' stroke-width='2'/%3E%3Cpath d='M26 46 Q24 30 30 20' stroke='%23cdbf5a' stroke-width='1.6'/%3E%3Cpath d='M38 46 Q44 20 36 2' stroke='%2321402a' stroke-width='2'/%3E%3Cpath d='M50 46 Q50 32 58 24' stroke='%238fb36a' stroke-width='2'/%3E%3Cpath d='M64 46 Q60 26 68 10' stroke='%233d6b2c' stroke-width='2'/%3E%3Cpath d='M76 46 Q80 34 74 26' stroke='%23cdbf5a' stroke-width='1.6'/%3E%3Cpath d='M88 46 Q92 18 100 8' stroke='%235e8452' stroke-width='2'/%3E%3Cpath d='M104 46 Q102 30 110 22' stroke='%2321402a' stroke-width='2'/%3E%3Cpath d='M116 46 Q118 36 114 28' stroke='%238fb36a' stroke-width='1.6'/%3E%3C/g%3E%3C/svg%3E") repeat-x bottom/120px 46px}
-.capim.alto{animation:vento 6s ease-in-out infinite alternate;transform-origin:bottom}
-@keyframes vento{to{transform:skewX(-3deg)}}
-.folhas-caindo{position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden}
-.folhinha{position:absolute;top:-30px;width:16px;height:16px;opacity:.55;animation:cai linear infinite}
-@keyframes cai{to{transform:translate(var(--vx),110vh) rotate(540deg)}}
-.miolo{position:relative;z-index:1}
+/* céu que amanhece */
+.ceu{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(#f4e7b8, #e7eed8 55%, #cfdcb4)}
+.ceu .madrugada{position:absolute;inset:0;background:linear-gradient(#0f1c16, #1f3a2a 60%, #2c4a2e);opacity:calc(1 - var(--dia)*1.25)}
+.ceu .rosa{position:absolute;inset:0;background:radial-gradient(90% 50% at 50% 70%, rgba(233,196,90,.55), transparent 70%);opacity:calc(var(--dia)*1.6 - var(--dia)*var(--dia)*1.2)}
+.ceu .sol{position:absolute;left:50%;width:120px;height:120px;margin-left:-60px;border-radius:50%;background:radial-gradient(circle,#fff3c4 0 38%, #f2d27a 40%, rgba(242,210,122,0) 70%);
+  top:calc(78% - var(--dia)*62%);transition:top .2s linear}
+.ceu .estrelas{position:absolute;inset:0 0 40% 0;opacity:calc(1 - var(--dia)*2.4);
+  background-image:radial-gradient(1.4px 1.4px at 12% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 8%,#fff,transparent),radial-gradient(1.2px 1.2px at 62% 16%,#fff,transparent),radial-gradient(1px 1px at 80% 30%,#fff,transparent),radial-gradient(1.4px 1.4px at 46% 34%,#fff,transparent),radial-gradient(1px 1px at 90% 10%,#fff,transparent),radial-gradient(1px 1px at 20% 42%,#fff,transparent)}
+.ceu .morro{position:absolute;left:-10%;right:-10%;bottom:0;height:34%;background:var(--mata);border-radius:50% 50% 0 0/40% 40% 0 0;opacity:.92}
+.ceu .morro.b{height:24%;left:20%;right:-30%;background:var(--musgo);opacity:.85}
+.ceu .morro.c{height:16%;left:-30%;right:30%;background:#4f7f3a;opacity:.9}
 
-/* estrutura de livrinho */
-.livro{position:fixed;inset:0;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.topo{flex:none;display:flex;align-items:center;gap:10px;padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));border-bottom:2px solid var(--tinta);background:var(--papel);z-index:5}
-.topo .marca{font-family:var(--f-display);font-weight:800;color:var(--tinta);font-size:15px;letter-spacing:.02em;white-space:nowrap}
-.trilho{flex:1;display:flex;gap:4px;min-width:0}
-.trilho button{flex:1;height:44px;border:none;background:none;padding:0;position:relative}
-.trilho button::after{content:"";position:absolute;left:0;right:0;top:20px;height:4px;background:var(--papel2);border-radius:2px}
-.trilho button.lido::after{background:var(--tinta-leve)}
-.trilho button[aria-current="true"]::after{background:var(--sol);height:6px;top:19px}
-.folhas{flex:1;position:relative;overflow:hidden}
-.cap{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;visibility:hidden;opacity:0;transform:translateX(24px);transition:opacity .45s, transform .45s, visibility 0s .45s}
-.cap.ativa{visibility:visible;opacity:1;transform:none;transition:opacity .45s, transform .45s}
-.cap.saindo-esq{transform:translateX(-24px)}
-.miolo{max-width:600px;margin:0 auto;padding-block:30px 120px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-.rodape-nav{flex:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));border-top:2px solid var(--tinta);background:var(--papel);z-index:5}
-.rodape-nav button{min-height:48px;padding:0 16px;border:2px solid var(--tinta);background:var(--papel);color:var(--tinta);font-family:var(--f-display);font-weight:700;border-radius:0}
-.rodape-nav button:disabled{opacity:.3;cursor:default}
-.rodape-nav .seguir{background:var(--tinta);color:var(--papel)}
-.rodape-nav .contador{font-family:var(--f-maquina);font-size:14px;color:var(--cinza)}
+main{position:relative;z-index:1}
+.parada{min-height:auto;padding-block:72px;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.folha-papel{max-width:560px;margin:0 auto;background:color-mix(in srgb, var(--papel) 94%, transparent);border-radius:3px 18px 3px 18px;padding:28px 22px 24px;box-shadow:0 20px 40px -24px rgba(20,40,20,.55)}
+.etq{font-family:var(--f-maquina);font-size:13.5px;color:var(--musgo);letter-spacing:.05em;display:block;margin-bottom:6px}
+h2{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,8.5vw,44px);line-height:1.02;color:var(--mata);margin:0 0 18px;letter-spacing:-.01em;text-wrap:balance}
+h2 i{font-weight:400;color:var(--musgo)}
+.leve{color:var(--suave)}
+.nota-mao{font-family:var(--f-maquina);font-size:14px;color:var(--suave);margin-top:10px}
+.btn{min-height:50px;padding:0 22px;border-radius:999px;border:2px solid var(--mata);background:var(--mata);color:var(--papel);font-family:var(--f-texto);font-weight:700;font-size:16px}
+.btn.sol{background:var(--sol);border-color:var(--sol);color:var(--mata)}
+.btn.claro{background:transparent;color:var(--mata)}
 
-/* tipografia de capítulo */
-.num{font-family:var(--f-maquina);font-size:14px;color:var(--tinta);letter-spacing:.06em;text-transform:uppercase}
-h2{font-family:var(--f-display);font-weight:800;color:var(--tinta);font-size:clamp(36px,11vw,58px);line-height:.95;letter-spacing:-.02em;margin:6px 0 22px;text-wrap:balance}
-h2 .sol{background:linear-gradient(transparent 58%, var(--sol) 58% 92%, transparent 92%)}
-.olho{font-family:var(--f-display);font-size:21px;line-height:1.3;color:var(--tinta);margin-bottom:22px;font-weight:400}
-.margem{font-family:var(--f-maquina);font-size:14.5px;line-height:1.5;color:var(--musgo);border-left:3px solid var(--musgo);padding:2px 0 2px 12px;margin:22px 0}
-.pausa{height:34px}
-.dica{font-family:var(--f-maquina);font-size:13px;color:var(--cinza);margin-top:6px}
+/* abertura */
+#janela{min-height:100svh;display:flex;align-items:center}
+.abre{max-width:560px;margin:0 auto;width:100%}
+.abre .hora{font-family:var(--f-maquina);font-size:15px;color:#e8eedb;opacity:calc(1 - var(--dia)*.6)}
+.abre h1{font-family:var(--f-display);font-weight:800;font-size:clamp(56px,18vw,104px);line-height:.92;margin:10px 0 18px;letter-spacing:-.03em;
+  color:color-mix(in srgb, #f2f4e8 calc(100% - var(--dia)*100%), #21402a)}
+.abre h1 i{font-weight:400}
+.abre p{color:color-mix(in srgb, #dfe6cf calc(100% - var(--dia)*100%), #3d4a3a);max-width:24em}
 
-/* CAP 0 — capa */
-.capa{min-height:100%;display:flex;flex-direction:column;justify-content:center}
-.capa .nome{font-family:var(--f-display);font-weight:800;color:var(--tinta);line-height:.86;letter-spacing:-.04em;font-size:clamp(76px,27vw,150px);margin:0;position:relative;display:inline-block}
-.capa .nome .deslocada{position:absolute;left:5px;top:4px;color:var(--sol);z-index:-1}
-.capa .sub{font-family:var(--f-maquina);color:var(--grafite);font-size:15px;margin:18px 0 28px;max-width:28em}
-.etiqueta-nome{display:flex;gap:0;border:2px solid var(--tinta);width:max-content;max-width:100%;margin-bottom:26px}
-.etiqueta-nome button{min-height:48px;padding:0 14px;border:none;background:none;font-family:var(--f-display);font-weight:700;color:var(--tinta)}
-.etiqueta-nome button[aria-pressed="true"]{background:var(--tinta);color:var(--papel)}
-.nome-nota{min-height:5.2em;font-size:17px}
-.btn-grande{min-height:56px;padding:0 26px;background:var(--sol);border:2px solid var(--grafite);font-family:var(--f-display);font-weight:800;font-size:19px;color:var(--grafite);box-shadow:4px 4px 0 var(--tinta);transition:transform .15s, box-shadow .15s;align-self:flex-start}
-.btn-grande:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--tinta)}
+/* contador de manhãs */
+.manhas{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:8px 0 14px}
+.manhas .n{font-family:var(--f-display);font-weight:800;font-size:64px;line-height:1;color:var(--musgo);font-variant-numeric:tabular-nums}
+.manhas .u{font-family:var(--f-maquina);font-size:14px;color:var(--suave)}
+.trilha-dias{display:flex;flex-wrap:wrap;gap:3px;margin:10px 0 16px}
+.trilha-dias i{width:7px;height:7px;border-radius:2px;background:var(--folha);opacity:.55}
+.trilha-dias i.hoje{background:var(--sol);opacity:1;transform:scale(1.4)}
 
-/* ingressos */
-.ingresso{display:flex;width:100%;margin:18px 0;border:2px solid var(--tinta);background:var(--papel);text-align:left;padding:0;position:relative}
-.ingresso .canhoto{flex:none;width:68px;border-right:2px dashed var(--tinta);display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--f-maquina);font-size:12px;color:var(--tinta);letter-spacing:.1em;transition:transform .5s, opacity .5s}
-.ingresso .corpo{padding:16px 14px;min-width:0}
-.ingresso .t{font-family:var(--f-display);font-weight:800;font-size:22px;color:var(--tinta);line-height:1.05;display:block}
-.ingresso .s{font-family:var(--f-maquina);font-size:13px;color:var(--cinza)}
-.ingresso[aria-expanded="true"] .canhoto{transform:rotate(180deg) translateX(10px);opacity:.35}
-.ingresso.b{border-color:var(--musgo)} .ingresso.b .canhoto{border-color:var(--musgo);color:var(--musgo)} .ingresso.b .t{color:var(--musgo)}
-.verso{padding:4px 0 10px}
+/* pote de bilhetes */
+.pote{display:flex;flex-direction:column;align-items:center;gap:14px;margin:10px 0 6px}
+#pote{width:150px;height:170px;border:none;background:none;padding:0;position:relative}
+#pote svg{width:100%;height:100%}
+#pote.chacoalha svg{animation:chacoalha .5s ease}
+@keyframes chacoalha{25%{transform:rotate(-7deg)}50%{transform:rotate(6deg)}75%{transform:rotate(-3deg)}}
+.bilhete{background:#fffbe9;border:1.5px solid var(--terra);padding:16px 16px 14px;max-width:340px;width:100%;transform:rotate(-1.5deg);font-size:17px;min-height:96px;box-shadow:0 10px 18px -12px rgba(60,40,20,.6)}
+.bilhete.novo{animation:sai .5s ease}
+@keyframes sai{from{opacity:0;transform:translateY(-30px) rotate(6deg) scale(.8)}}
+.bilhete small{display:block;font-family:var(--f-maquina);color:var(--terra);font-size:12px;margin-top:8px}
 
-/* Outer Banks — fala que transborda */
-.balao{border:2px solid var(--grafite);background:#f3f1dc;padding:18px 16px;position:relative;margin:20px 0 26px;border-radius:2px}
-.balao::after{content:"";position:absolute;left:34px;bottom:-14px;width:22px;height:22px;background:#f3f1dc;border-right:2px solid var(--grafite);border-bottom:2px solid var(--grafite);transform:rotate(45deg) skew(8deg,8deg)}
-.balao .fala{font-family:var(--f-display);font-size:19px;line-height:1.35;color:var(--grafite)}
-.balao .fala span{display:inline;animation:entra .5s ease both}
-@keyframes entra{from{opacity:0;background:var(--sol)}}
-.balao .mais{margin-top:12px;min-height:44px;padding:0 14px;border:2px dashed var(--tinta);background:none;color:var(--tinta);font-family:var(--f-maquina);font-size:14px}
+/* lista que não cobra */
+.lista{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.lista label{display:flex;gap:12px;align-items:center;min-height:48px;padding:8px 12px;border:1.5px dashed var(--musgo);border-radius:10px;cursor:pointer;background:rgba(255,255,255,.35)}
+.lista input{width:24px;height:24px;accent-color:var(--musgo);flex:none}
+.lista input:checked + span{text-decoration:line-through;text-decoration-color:var(--capim);text-decoration-thickness:3px;color:var(--suave)}
+.lista .resposta{font-family:var(--f-maquina);font-size:13px;color:var(--musgo);margin-left:auto;white-space:nowrap}
 
-/* fogo — segurar */
-.fogao{display:flex;flex-direction:column;align-items:center;margin:16px 0 8px;user-select:none;-webkit-user-select:none}
-#segurar{overflow:visible;width:200px;height:200px;border-radius:50%;border:2px solid var(--grafite);background:var(--papel);position:relative;touch-action:none;-webkit-touch-callout:none}
-#segurar svg{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
-#segurar .anel{position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(var(--tinta) calc(var(--p,0)*1turn), transparent 0);-webkit-mask:radial-gradient(circle, transparent 60%, #000 61%);mask:radial-gradient(circle, transparent 60%, #000 61%);opacity:.9}
-.chama-a,.chama-b{transform-origin:50% 92%;transition:transform .2s linear}
-.chama-a{animation:arde .5s ease-in-out infinite alternate}
-.chama-b{animation:arde .38s ease-in-out infinite alternate-reverse}
-@keyframes arde{to{transform:scale(1.06,1.12) skewX(-4deg)}}
-.calmo .chama-a,.calmo .chama-b{animation-duration:2.6s}
-.fogo-passos p{transition:opacity .6s}
-.fogo-passos p.apagado{opacity:.18}
-.fogo-passos p.atual{opacity:1}
-
+/* campinho */
+.ficha-campo{border-top:2px solid var(--musgo);padding-top:12px;min-height:130px}
+.ficha-campo .lat{font-family:var(--f-maquina);font-size:13px;color:var(--musgo)}
+.ficha-campo h3{font-family:var(--f-display);font-weight:800;font-size:24px;color:var(--mata);margin:0 0 4px}
+.dica{font-family:var(--f-maquina);font-size:13px;color:var(--suave)}
 /* campo vivo */
 .campo-vivo{position:relative;height:380px;margin:18px 0 10px;border:2px solid var(--musgo);overflow:hidden;touch-action:manipulation;cursor:pointer;
   background:linear-gradient(#e3e9cf 0 20%, #c9d9a8 20% 64%, #a9c4bf 64% 100%)}
@@ -137,328 +109,226 @@ h2 .sol{background:linear-gradient(transparent 58%, var(--sol) 58% 92%, transpar
 .campo-botoes button{min-height:44px;padding:0 14px;border:2px solid var(--musgo);background:var(--papel);color:var(--musgo);font-family:var(--f-maquina);font-size:14px}
 .contagem{font-family:var(--f-maquina);font-size:13px;color:var(--cinza);align-self:center}
 
-/* antes / depois */
-.comparar{position:relative;margin:22px 0 10px;border:2px solid var(--tinta);height:240px;overflow:hidden;touch-action:pan-y}
-.comparar .lado{position:absolute;inset:0;padding:18px 16px;display:flex;flex-direction:column;justify-content:flex-end}
-.comparar .antes{background:var(--papel2)}
-.comparar .depois{background:var(--tinta);color:var(--papel);clip-path:inset(0 0 0 var(--corte,50%))}
-.comparar .rot{font-family:var(--f-maquina);font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-.comparar .frase{font-family:var(--f-display);font-size:22px;line-height:1.15;font-weight:700;max-width:16em}
-.comparar .antes .frase{color:var(--cinza)}
-.comparar svg{position:absolute;top:14px;left:16px;right:16px;width:calc(100% - 32px);height:90px}
-.corte-linha{position:absolute;top:0;bottom:0;left:var(--corte,50%);width:2px;background:var(--sol);pointer-events:none}
-#corte{width:100%;margin:6px 0 2px;accent-color:var(--tinta);height:44px}
 
-/* a semana */
-.semana{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:20px 0 6px}
-.dia{aspect-ratio:1;max-width:100%;border:2px solid var(--grafite);display:flex;align-items:center;justify-content:center;font-family:var(--f-maquina);font-size:15px;position:relative;background:var(--papel)}
-.dia.riscado::after{content:"";position:absolute;inset:18% 10%;border-top:2px solid var(--tinta);transform:rotate(-30deg);top:50%}
-.dia.alem{border-color:var(--tinta-leve);color:var(--tinta-leve);animation:entra .6s ease both}
-#continuar-semana{min-height:48px;padding:0 16px;border:2px solid var(--tinta);background:none;color:var(--tinta);font-family:var(--f-maquina);margin:10px 0 24px}
-.coracao-texto p{font-size:19px;line-height:1.7}
-.coracao-texto .so{font-family:var(--f-display);font-size:24px;line-height:1.25;color:var(--tinta);font-weight:700;margin:34px 0}
-
-/* arquivo */
-.gaveta{margin:20px 0}
-.gaveta details{border-top:2px solid var(--grafite)}
-.gaveta details:last-child{border-bottom:2px solid var(--grafite)}
-.gaveta summary{min-height:52px;display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;font-family:var(--f-display);font-weight:700;font-size:18px;padding:8px 0}
-.gaveta summary::-webkit-details-marker{display:none}
-.gaveta summary .n{font-family:var(--f-maquina);font-size:13px;color:var(--cinza);font-weight:400}
-.gaveta summary::after{content:"+";margin-left:auto;font-family:var(--f-maquina);font-size:22px;color:var(--tinta)}
-.gaveta details[open] summary::after{content:"–"}
-.gaveta .dentro{padding:0 0 16px 0}
-.gaveta .branco summary{color:var(--cinza);font-weight:400;font-style:italic;font-family:var(--f-texto)}
 
 /* final */
-.final .so{font-family:var(--f-display);font-size:clamp(26px,7vw,34px);line-height:1.2;color:var(--tinta);font-weight:800;margin:6px 0 26px;text-wrap:balance}
-.assina{font-family:var(--f-maquina);font-size:16px;color:var(--grafite);margin-top:34px;border-top:2px solid var(--tinta);padding-top:14px}
-.colofao{font-family:var(--f-maquina);font-size:12.5px;color:var(--cinza);margin-top:40px}
+.fim h2{font-size:clamp(40px,12vw,64px)}
+.assina{font-family:var(--f-maquina);color:var(--mata);margin-top:26px;font-size:15px}
+footer{position:relative;z-index:1;text-align:center;font-family:var(--f-maquina);font-size:12px;color:#e8eedb;padding-block:24px 34px;padding-left:16px;padding-right:16px}
 
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
-}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
 </style>
 </head>
 <body>
 
-<div class="folhas-caindo" id="folhas-caindo" aria-hidden="true"></div>
-<div class="livro">
-  <header class="topo">
-    <span class="marca">LARA</span>
-    <nav class="trilho" id="trilho" aria-label="Capítulos"></nav>
-  </header>
-  <main class="folhas" id="folhas"></main>
-  <span class="capim alto" aria-hidden="true" style="bottom:auto;position:relative;height:30px;margin-top:-30px;background-size:90px 30px"></span>
-  <footer class="rodape-nav">
-    <button id="voltar" aria-label="Capítulo anterior">←</button>
-    <span class="contador" id="contador" aria-live="polite"></span>
-    <button id="seguir" class="seguir">vira a página →</button>
-  </footer>
-</div>
+<div class="ceu" aria-hidden="true"><div class="madrugada"></div><div class="estrelas"></div><div class="rosa"></div><div class="sol"></div><div class="morro"></div><div class="morro b"></div><div class="morro c"></div></div>
+
+<main>
+  <section id="janela" class="parada" aria-label="Bom dia">
+    <div class="abre">
+      <span class="hora" id="hora"></span>
+      <h1>Bom dia, <i>Lara</i>.</h1>
+      <p id="txt-abre"></p>
+      <button class="btn sol" id="abrir-janela">abrir a janela</button>
+    </div>
+  </section>
+
+  <section class="parada" id="cedo" aria-labelledby="t-cedo"><div class="folha-papel">
+    <span class="etq">antes do resto do dia</span>
+    <h2 id="t-cedo">Um pedaço da manhã <i>que não pede nada</i></h2>
+    <div id="txt-cedo"></div>
+  </div></section>
+
+  <section class="parada" id="ano" aria-labelledby="t-ano"><div class="folha-papel">
+    <span class="etq">fazendo as contas</span>
+    <h2 id="t-ano">Mais de <i>um ano</i></h2>
+    <div class="manhas"><span class="n" id="n-manhas">365</span><span class="u">manhãs, no mínimo,<br>desde que a gente começou a conversar</span></div>
+    <div class="trilha-dias" id="trilha-dias" aria-hidden="true"></div>
+    <button class="btn claro" id="contar-hoje">contar a de hoje</button>
+    <div id="txt-ano" style="margin-top:18px"></div>
+  </div></section>
+
+  <section class="parada" id="campinho" aria-labelledby="t-campo"><div class="folha-papel">
+    <span class="etq">enquanto isso, no mato</span>
+    <h2 id="t-campo">O campinho <i>acordando</i></h2>
+    <p id="txt-campo"></p>
+    <p class="dica" id="dica-campo"></p>
+    <div class="campo-vivo" id="campo" aria-label="Campinho com bichos. Toque em um bicho ou no chão."><span class="grama" aria-hidden="true"></span><span class="agua" aria-hidden="true"></span></div>
+    <div class="campo-botoes" id="campo-botoes"></div>
+    <div class="ficha-campo" id="ficha-campo" aria-live="polite"><p class="dica">toca em alguém. a capivara já acordou.</p></div>
+  </div></section>
+
+  <section class="parada" id="pote-sec" aria-labelledby="t-pote"><div class="folha-papel">
+    <span class="etq">pra levar no bolso</span>
+    <h2 id="t-pote">Um pote de <i>bilhetinhos</i></h2>
+    <p>Um por dia, se quiser. Ou todos agora. Ninguém está contando.</p>
+    <div class="pote">
+      <button id="pote" aria-label="Tirar um bilhete do pote">
+        <svg viewBox="0 0 150 170" aria-hidden="true"><rect x="40" y="8" width="70" height="20" rx="4" fill="#7a5a3a"/><path d="M34 30 H116 C126 30 130 40 130 52 V146 C130 158 122 164 110 164 H40 C28 164 20 158 20 146 V52 C20 40 24 30 34 30Z" fill="rgba(223,230,207,.6)" stroke="#21402a" stroke-width="3"/>
+          <g id="papeis"><rect x="40" y="120" width="30" height="18" rx="2" fill="#fffbe9" stroke="#7a5a3a" transform="rotate(-12 55 129)"/><rect x="70" y="126" width="30" height="18" rx="2" fill="#f4e7b8" stroke="#7a5a3a" transform="rotate(10 85 135)"/><rect x="54" y="100" width="30" height="18" rx="2" fill="#dfe6cf" stroke="#7a5a3a" transform="rotate(4 69 109)"/><rect x="84" y="104" width="26" height="16" rx="2" fill="#fffbe9" stroke="#7a5a3a" transform="rotate(-20 97 112)"/><rect x="34" y="96" width="24" height="16" rx="2" fill="#f4e7b8" stroke="#7a5a3a" transform="rotate(18 46 104)"/></g></svg>
+      </button>
+      <div class="bilhete" id="bilhete" aria-live="polite"><span class="leve">toca no pote.</span></div>
+    </div>
+  </div></section>
+
+  <section class="parada" id="lista-sec" aria-labelledby="t-lista"><div class="folha-papel">
+    <span class="etq">uma lista que não cobra nada</span>
+    <h2 id="t-lista">Pra hoje, <i>se der</i></h2>
+    <ul class="lista" id="lista"></ul>
+    <p class="nota-mao" id="lista-nota"></p>
+  </div></section>
+
+  <section class="parada" id="vida" aria-labelledby="t-vida"><div class="folha-papel">
+    <span class="etq">sobre a vida, rapidinho</span>
+    <h2 id="t-vida">Coisas que eu <i>queria te dizer</i> num dia comum</h2>
+    <div id="txt-vida"></div>
+  </div></section>
+
+  <section class="parada fim" id="fim" aria-labelledby="t-fim"><div class="folha-papel">
+    <span class="etq">pronto</span>
+    <h2 id="t-fim">Bom dia. <i>Só isso.</i></h2>
+    <div id="txt-fim"></div>
+    <p class="assina" id="assina"></p>
+    <button class="btn claro" id="de-novo">ver o sol nascer de novo</button>
+  </div></section>
+</main>
+<footer>feito pra ser aberto de manhã · nada aqui é salvo nem enviado</footer>
 
 <script>
 /* =====================================================================
-   TEXTOS — tudo que se lê fica aqui. Edite à vontade.
-   Regra que eu mesmo segui: só está aqui o que eu sei de verdade.
+   TEXTOS — tudo que se lê fica aqui.
    ===================================================================== */
 const T = {
-  capa: {
-    sub: "um caderninho de bolso com coisas que eu lembro de você. vira com o dedo, ou pelos botões lá embaixo.",
-    notaMaria: "Maria Eduarda é o seu nome, e não tem nada de errado nele. Ninguém aqui está pedindo pra você trocar de nome nem de jeito.",
-    notaLara: "Lara é como eu te chamo. Virou, sem eu perceber, o nome que eu uso pra você quando você está solta: falando rápido, rindo de alguma coisa, contando de um bicho ou de uma série.",
-    botao: "abrir o caderno"
-  },
+  abre: "Ainda está meio escuro aqui. Abre a janela e desce devagar, que o dia vai clareando com você.",
 
-  saudade: [
-    "Eu vou tentar explicar uma coisa sem parecer que estou cobrando nada.",
-    "Ultimamente eu tenho a impressão de que você está mais contida. Pode ser só impressão minha. Eu não sei o que está acontecendo do seu lado, e não vou fingir que sei, nem vou chutar um culpado. Isto aqui é sobre o que eu sinto, não um palpite sobre você.",
-    "O que eu sinto é saudade da Lara. E quando eu digo isso eu não estou falando de uma personagem que você tem que representar pra mim. Estou falando de umas cenas bem concretas.",
-    "Da garota que me contava de Outer Banks animada demais pra respeitar vírgula. Da que chorou vendo Quem é Você, Alaska? do meu lado. Da que chorou de novo com Cyberpunk: Edgerunners. Da que vivia me falando de Desenfreados, da M. Kelly. Da que gosta de baleia, de gato, de libélula, de coelho e de inseto, tudo na mesma frase. Da que um dia quis Biologia e depois foi fazer Educação Física e começou a gostar.",
-    "É isso que eu chamo de Lara. As próximas páginas são cada uma dessas cenas, uma de cada vez."
+  cedo: [
+    "Tem uma parte da manhã que ainda não foi de ninguém. É antes das mensagens, antes da faculdade, antes de alguém precisar de alguma resposta sua.",
+    "Eu quis deixar uma coisa pequena nesse pedaço. Não é pra você responder, nem pra você ter que sentir nada em especial. É só um bom dia mais comprido que o normal.",
+    "Se você está lendo isso deitada, com o olho meio fechado, está perfeito. Foi pensado pra isso."
   ],
-  saudadeMargem: "nota: tudo que está neste caderno é coisa que eu vi ou que você me contou. onde eu não sei, eu digo que não sei.",
 
-  duasSessoes: {
-    intro: "Teve duas histórias que eu não consigo separar de você. Toca em cada ingresso.",
-    alaska: {
-      titulo: "Quem é Você, Alaska?", sub: "assistimos juntos",
-      texto: [
-        "Essa foi do meu lado. A gente estava assistindo junto, e você chorou.",
-        "Eu não vou fingir que sei qual parte te pegou, nem o que passou pela sua cabeça. Não sei, e não preciso saber pra lembrar.",
-        "O que eu sei é que existe uma diferença entre conhecer alguém e ter estado ali quando uma história mexeu com ela. A primeira coisa acontece com muita gente. A segunda é mais rara. Naquele dia eu vi um lado seu que não aparece em conversa de todo dia, e ele ficou comigo.",
-        "Quando eu digo que sinto falta de te ver se permitindo sentir as coisas na frente de alguém, é dessa noite que eu lembro. Não acho que você parou de sentir. Só sinto falta de ver."
-      ]
-    },
-    cyber: {
-      titulo: "Cyberpunk: Edgerunners", sub: "outra história, outra lembrança",
-      texto: [
-        "Essa é diferente. Eu não estava junto, foi você que me contou que chorou.",
-        "E é engraçado como isso muda a obra pra mim. Antes era só um anime que eu sabia que existia. Depois virou o anime que fez a Lara chorar. Não sei a cena, não sei o porquê, e não vou inventar.",
-        "Acho que é assim que a gente vai conhecendo alguém: não pela lista do que ela gosta, mas pelas coisas que bateram nela. Alaska e Edgerunners não têm quase nada a ver uma com a outra. As duas estão na minha cabeça na mesma gaveta, que é a gaveta com o seu nome."
-      ]
-    }
-  },
+  ano: [
+    "A gente se conhece há mais de um ano. Fiz a conta por cima e dá mais de trezentas e sessenta e cinco manhãs. Nem em todas a gente conversou, claro. Mas em muitas sim.",
+    "É engraçado como uma pessoa sai de ser um nome numa conversa e vira parte da rotina. Um dia você manda alguma coisa porque lembrou dela. Depois percebe que lembra dela por qualquer motivo: uma música, um bicho num vídeo, uma série que alguém comenta.",
+    "Você virou isso pra mim. Uma das pessoas que eu penso quando vejo uma coisa e acho que ela ia gostar.",
+    "E nesse tempo eu vi dias seus bons e dias pesados. Os dois contam. Um ano de amizade não é um ano de dias bonitos. É um ano de continuar aparecendo, do jeito que deu."
+  ],
+  anoHoje: "e hoje conta também.",
 
-  obx: {
-    intro: "Outer Banks você não terminou. E isso nunca teve a menor importância.",
-    fala: [
-      "O que eu lembro é de você contando.",
-      "Você falava rápido, pulava de uma parte pra outra,",
-      "voltava pra explicar uma coisa que tinha esquecido,",
-      "e dava pra ver que você queria muito que eu sentisse um pouco do que você estava sentindo assistindo.",
-      "Eu nem precisava ter visto a série pra gostar de ouvir."
-    ],
-    botao: "deixa ela terminar",
-    depois: [
-      "Tem um tipo de alegria que só aparece quando alguém está explicando uma coisa que ama pra outra pessoa. É meio atropelada, meio sem cerimônia. Eu lembro de você assim.",
-      "E eu não quero dizer com isso que você precisa estar sempre animada. Não precisa. Eu só lembro que você podia ficar, de verdade, por causa de uma série. E eu gostava de estar do outro lado ouvindo."
-    ]
-  },
+  campo: "Você gosta de bicho, então o bom dia veio com plateia. Eles estão acordando agora, que nem você.",
+  dicaCampo: "toca num bicho pra ele reagir. toca no chão ou na água pra quem estiver perto vir ver.",
 
-  campo: {
-    intro: [
-      "Agora uma página mais leve, porque eu também lembro das coisas leves.",
-      "Você gosta de capivara, de baleia, de gato, de libélula, de coelho, de inseto. Bichos que não têm quase nada em comum, a não ser que você presta atenção em todos eles. Teve uma época em que você quis fazer Biologia por causa disso.",
-      "Então eu fiz um campinho pra eles. É seu, pode mexer."
-    ],
-    dica: "toca num bicho pra ele reagir e abrir a ficha. toca no chão ou na água e quem estiver perto vem ver.",
-    /* tipo: "chao" anda na grama, "agua" fica na água, "ar" voa.
-       visitante:true = bicho que eu coloquei só pra fazer companhia; a ficha diz isso. */
+  bilhetes: [
+    "Não precisa render hoje. Se render, ótimo. Se não, o dia continua sendo seu.",
+    "Toma água antes do café. Ou depois. Mas toma.",
+    "Se alguém te deixar pra baixo hoje, lembra que tem uma pessoa do outro lado da tela que acha você bem mais interessante do que esse alguém percebeu.",
+    "Você não precisa ter opinião sobre tudo nem resposta pra tudo. Às vezes \"não sei ainda\" é a resposta mais honesta.",
+    "Dá pra recomeçar o dia às três da tarde. Ninguém fiscaliza isso.",
+    "Repara num bicho hoje. Qualquer um. Um passarinho, uma formiga, um gato de rua. Você sempre foi boa nisso.",
+    "Se der vontade de falar muito sobre uma coisa que você gosta, fala. Eu ouço.",
+    "Cansaço não é defeito de caráter.",
+    "Você pode mudar de ideia sobre o que quer da vida quantas vezes precisar. Ninguém nasce com o mapa.",
+    "Um dia ruim não apaga um ano bom. Nem uma semana ruim.",
+    "Come alguma coisa que você goste hoje. Não precisa ser saudável. Precisa ser gostoso.",
+    "Ficar quieta também é um jeito de ser você.",
+    "Esse pote não acaba. Ele recomeça."
+  ],
+
+  lista: [
+    { t:"abrir a janela (já foi, você fez lá em cima)", r:"✓ de cara" },
+    { t:"beber um copo d'água", r:"boa" },
+    { t:"olhar pro céu uma vez", r:"tá bonito?" },
+    { t:"comer alguma coisa de verdade", r:"isso" },
+    { t:"não se cobrar por uma coisa só", r:"já é muito" },
+    { t:"mandar um áudio falando de algo que você gosta", r:"vou ouvir inteiro" }
+  ],
+  listaNota: "se você não marcar nenhum, o dia continua valendo do mesmo jeito.",
+  listaNotaCheia: "marcou tudo. eu não ia cobrar, mas fiquei feliz.",
+
+  vida: [
+    "Eu não tenho a vida resolvida, e acho que ninguém da nossa idade tem. A gente finge um pouco melhor ou um pouco pior, só isso.",
+    "O que eu fui aprendendo é que a vida não é uma fila de conquistas. É muito mais feita de manhãs normais. Acordar, ver o que tem pra hoje, rir de alguma bobagem, conversar com alguém de quem a gente gosta, dormir. Repetir.",
+    "Tem dias em que tudo isso parece pouco. Não é. É a maior parte do que existe.",
+    "Então se hoje for só um dia normal, sem nada de especial, que seja um normal bom. E se for um dia difícil, que pelo menos tenha começado com alguém te desejando bom dia de um jeito meio exagerado.",
+    "Você não precisa ser nenhuma versão específica de você pra isso valer. Pode acordar animada, pode acordar sem vontade de falar com ninguém. As duas Laras recebem o mesmo bom dia."
+  ],
+
+  fim: [
+    "Era só isso mesmo. Um bom dia com céu, bicho, bilhete e uma lista que não cobra nada.",
+    "Fica o tempo que quiser. Depois fecha e vai viver o dia."
+  ],
+  assina: "— de alguém que acordou querendo te mandar isso",
+
+  /* ---- campinho: bichos e fichas da manhã ---- */
+  campo_motor: {
+    dica: "",
     especies: [
-      { id:"capivara", nome:"capivara", tipo:"chao", lat:"a que fica de boa",
-        texto:"A capivara é a dona do campinho. Fica parada, deixa todo mundo chegar perto e não tem pressa nenhuma. Ela está aqui porque é sua. Toca mais vezes nela." },
-      { id:"baleia", nome:"baleia", tipo:"agua", lat:"o maior de todos",
-        texto:"Eu acho bonito que um bicho do tamanho de um prédio esteja na sua lista do lado de um inseto. O que te chama não é o tamanho de nada. É o bicho em si." },
-      { id:"gato", nome:"gato", tipo:"chao", lat:"o de casa",
-        texto:"Gato é o mais comum da lista, o que todo mundo já viu. E mesmo assim você gosta dele do mesmo jeito. Não precisa ser raro pra merecer atenção sua." },
-      { id:"libelula", nome:"libélula", tipo:"ar", lat:"a que pousa e some",
-        texto:"Libélula é daqueles bichos que a maioria das pessoas nem percebe que passou. Você percebe. Tenta pegar ela." },
-      { id:"coelho", nome:"coelho", tipo:"chao", lat:"o miúdo",
-        texto:"Coelho está aqui porque está na sua lista, e pra mim isso basta. Não preciso transformar ele em lição de nada." },
-      { id:"inseto", nome:"besouro", tipo:"chao", lat:"os que ninguém olha",
-        texto:"Muita gente acha inseto nojento ou nem enxerga. Você gosta. É uma das coisas mais suas, porque ninguém gosta de inseto pra parecer legal." },
-      { id:"pato", nome:"pato", tipo:"agua", visitante:true, lat:"visitante",
-        texto:"Esse não estava na sua lista. Veio passear porque a capivara deixa todo mundo ficar." },
-      { id:"sapo", nome:"sapo", tipo:"chao", visitante:true, lat:"visitante",
-        texto:"Também é visitante. Pula quando você toca. Ficou porque achou o lugar tranquilo." }
+      { id:"capivara", nome:"capivara", tipo:"chao", lat:"acordou primeiro", texto:"A capivara acorda e não faz nada com pressa. Fica ali, tomando sol, deixando o dia chegar. Um bom plano pra hoje, inclusive." },
+      { id:"baleia", nome:"baleia", tipo:"agua", lat:"respirando fundo", texto:"Baleia sobe pra respirar e depois some de novo. Ninguém acha estranho. Você também pode sumir um pouco e voltar." },
+      { id:"gato", nome:"gato", tipo:"chao", lat:"ainda com sono", texto:"O gato não quer acordar. O gato está certo. Cinco minutinhos não fazem mal a ninguém." },
+      { id:"libelula", nome:"libélula", tipo:"ar", lat:"já voando", texto:"A libélula é a mais acordada de todos. Tenta pegar ela. Spoiler: ela foge." },
+      { id:"coelho", nome:"coelho", tipo:"chao", lat:"procurando café da manhã", texto:"O coelho saiu atrás de comida antes de qualquer coisa. Prioridades certas." },
+      { id:"inseto", nome:"besouro", tipo:"chao", lat:"andando devagar", texto:"O besouro vai atravessar o campinho inteiro hoje. Devagar, mas vai. Às vezes é assim que dá." },
+      { id:"pato", nome:"pato", tipo:"agua", visitante:true, lat:"visitante", texto:"O pato veio só dar bom dia também. Quá." },
+      { id:"sapo", nome:"sapo", tipo:"chao", visitante:true, lat:"visitante", texto:"O sapo acordou de mau humor. Toca nele que ele pula e melhora." }
     ],
-    reacoes: { capivara:["…","de boa","🍊","zzz"], gato:["mrrr","!"], coelho:["!"], sapo:["croc"], pato:["quá"], baleia:["fsshh"], inseto:["·"], libelula:["~"] },
-    botoes: { mais:"+ capivara", juntar:"chamar todo mundo", agito:"espalhar" },
-    fecho: [
-      "Sobre a Biologia: você não foi por esse caminho, e está tudo bem. Um interesse não precisa virar profissão pra continuar contando. O que você gosta de olhar no mundo vivo não fica menor porque o diploma é de outra coisa.",
-      "Eu não lembro só dos assuntos pesados das nossas conversas. Lembro também disso: do que chama a sua atenção, do tipo de mundo que você gosta de conhecer."
-    ]
-  },
-
-  caminho: {
-    intro: "Essa é uma das mudanças que eu tive a sorte de ver acontecer de perto.",
-    antesRot: "antes", antes: "não fazia ideia do que ia fazer",
-    depoisRot: "depois", depois: "Educação Física, e gostando",
-    dica: "arrasta a barra pra passar do antes pro depois.",
-    texto: [
-      "Teve uma época em que o futuro parecia te deixar meio perdida. Você não sabia o que ia fazer, e dava pra sentir que essa pergunta pesava.",
-      "Depois você escolheu. Educação Física. Entrou, começou uma etapa nova e foi encontrando coisas de que gosta lá dentro.",
-      "Eu fiquei feliz de um jeito bem simples, do jeito que a gente fica quando vê uma pessoa de quem gosta sair de um lugar confuso e chegar num lugar que faz bem pra ela.",
-      "Não acho que você resolveu a vida, nem que as dúvidas acabaram. Ninguém tem isso. E se um dia você mudar de ideia, também é seu direito. Mas eu vi essa mudança acontecer, e foi bom ter visto."
-    ]
-  },
-
-  semana: {
-    intro: "No começo você disse que a gente provavelmente nem ia se falar por uma semana.",
-    botao: "e depois do sétimo dia?",
-    texto: [
-      "Eu não sei se, naquele momento, algum de nós imaginava que eu ia acabar lembrando de tanta coisa sua.",
-      "E o curioso é que não são só as coisas fáceis de lembrar. Série, livro, bicho, essas são as que eu consegui colocar neste caderno.",
-      "As outras não estão aqui. São detalhes que você me contou sobre a sua vida, pensamentos que resolveu dividir comigo, coisas que estavam bem longe da superfície. Essas eu não vou escrever num site. Elas são suas.",
-      "Mas eu lembro delas.",
-      "Não quero transformar isso numa dívida. Você não me deve nada por ter confiado em mim. E também não quero fazer parecer que você tem que continuar sendo a mesma pessoa só porque eu me lembro de quem você foi.",
-      "Eu só quero que você saiba que eu estava prestando atenção. Que o que você escolheu me contar não sumiu de mim assim que a conversa acabou. Algumas coisas ficaram comigo, talvez mais do que você imagina."
-    ],
-    so: "Era pra durar uma semana. Ficou."
-  },
-
-  /* ---------------------------------------------------------------
-     ARQUIVO DE LEMBRANÇAS — acrescente as suas aqui.
-     titulo: o que aparece fechado.  texto: o que aparece aberto.
-     Um item com branco:true aparece como gaveta vazia de propósito.
-     Escreva só o que ela ficaria à vontade de ler num link.
-     --------------------------------------------------------------- */
-  arquivo: {
-    intro: "Uma gaveta pras lembranças que eu quiser ir colocando com o tempo.",
-    itens: [
-      { titulo:"a previsão da semana", texto:"Você achou que a gente nem ia durar uma semana conversando." },
-      { titulo:"Alaska, do meu lado", texto:"A gente assistiu junto e você chorou." },
-      { titulo:"Outer Banks, contado por você", texto:"Você não terminou, mas falava dela como se fosse a melhor coisa do mundo." },
-      { titulo:"Desenfreados", texto:"O livro da M. Kelly que você sempre me contava." },
-      { titulo:"o dia que virou Educação Física", texto:"Quando você escolheu o curso e começou a gostar." },
-      { branco:true, titulo:"essa gaveta fica fechada", texto:"Aqui ficam as coisas que você me contou e que são só suas. Eu lembro, e elas continuam guardadas, não escritas." }
-    ]
-  },
-
-  final: {
-    so: "Você não precisa ser a Lara pra mim.",
-    texto: [
-      "Parece estranho dizer isso depois de um caderno inteiro sobre ela, mas é o mais importante.",
-      "Eu não sinto saudade de alguém que precisa estar animada o tempo todo. Você não tem que chorar com série, falar de livro, gostar de bicho de um jeito certo ou agir como agia antes pra continuar sendo você.",
-      "O que eu sinto falta é de te ver livre pra mostrar esses lados quando eles estão aí. Sem esconder o que gosta, sem segurar a empolgação, sem deixar parte de você de lado pra caber no que esperam.",
-      "Eu não sei tudo o que está acontecendo. Não vou fingir que sei, e não estou pedindo explicação.",
-      "Pode estar cansada. Confusa. Quieta. Diferente de como eu lembro. Você não precisa me oferecer uma versão alegre, interessante ou entusiasmada de você pra ter a minha amizade. Ela já está aí.",
-      "Se um dia a Lara quiser aparecer, eu vou reconhecer. E se não quiser, eu continuo aqui do mesmo jeito."
-    ],
-    assina: "de quem estava prestando atenção.",
-    colofao: "feito à mão, impresso em duas tintas imaginárias. nada aqui é salvo nem enviado pra lugar nenhum."
+    reacoes: { capivara:["bom dia","…","🍊","sol bom"], gato:["zzz","mrrr","só mais 5"], coelho:["!"], sapo:["croc"], pato:["quá","bom dia"], baleia:["fsshh"], inseto:["·"], libelula:["~"] },
+    botoes: { mais:"+ capivara", juntar:"chamar todo mundo", agito:"espalhar" }
   }
 };
 
 /* ============================== MONTAGEM ============================== */
 const $=s=>document.querySelector(s);
 const h=(tag,attrs={},html='')=>{const e=document.createElement(tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(html)e.innerHTML=html;return e;};
-const ps=arr=>arr.map(t=>`<p>${t}</p>`).join('');
+const ps=a=>a.map(t=>`<p>${t}</p>`).join('');
 const calmoMov=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const raiz=document.documentElement;
 
-const capitulos=[
-  {rot:"capa", html:`<div class="miolo capa">
-     <p class="nome" aria-label="Lara"><span class="deslocada" aria-hidden="true">Lara</span>Lara</p>
-     <p class="sub">${T.capa.sub}</p>
-     <div class="etiqueta-nome" role="group" aria-label="Os seus nomes">
-       <button aria-pressed="false" data-nome="maria">Maria Eduarda</button>
-       <button aria-pressed="true" data-nome="lara">Lara</button>
-     </div>
-     <p class="nome-nota" id="nome-nota" aria-live="polite">${T.capa.notaLara}</p>
-     <button class="btn-grande" id="abrir">${T.capa.botao}</button>
-   </div>`},
-  {rot:"a saudade", html:`<div class="miolo"><span class="num">capítulo 1</span><h2>O que eu quero dizer com <span class="sol">saudade</span></h2>${ps(T.saudade)}<p class="margem">${T.saudadeMargem}</p></div>`},
-  {rot:"duas sessões", html:`<div class="miolo"><span class="num">capítulo 2</span><h2>Duas <span class="sol">sessões</span></h2><p class="olho">${T.duasSessoes.intro}</p><div id="ingressos"></div></div>`},
-  {rot:"Outer Banks", html:`<div class="miolo"><span class="num">capítulo 3</span><h2>Você <span class="sol">contando</span></h2><p class="olho">${T.obx.intro}</p>
-     <div class="balao"><p class="fala" id="fala" aria-live="polite"></p><button class="mais" id="mais-fala">${T.obx.botao}</button></div>
-     <div id="obx-depois" hidden>${ps(T.obx.depois)}</div></div>`},
-  {rot:"caderno de campo", html:`<div class="miolo"><span class="num">capítulo 4</span><h2>Caderno de <span class="sol">campo</span></h2>${ps(T.campo.intro)}
-     <p class="dica">${T.campo.dica}</p><div class="campo-vivo" id="campo" aria-label="Campinho com bichos. Toque em um bicho ou no chão."><span class="grama" aria-hidden="true"></span><span class="agua" aria-hidden="true"></span></div><div class="campo-botoes" id="campo-botoes"></div>
-     <div class="ficha-campo" id="ficha-campo" aria-live="polite"><p class="dica">nenhuma ficha aberta ainda.</p></div>
-     <div class="pausa"></div>${ps(T.campo.fecho)}</div>`},
-  {rot:"o caminho", html:`<div class="miolo"><span class="num">capítulo 5</span><h2>Antes e <span class="sol">depois</span></h2><p class="olho">${T.caminho.intro}</p>
-     <div class="comparar" id="comparar" style="--corte:62%">
-       <div class="lado antes"><svg viewBox="0 0 300 90" aria-hidden="true"><path d="M10 70 C40 20 60 80 90 40 S140 10 120 60 S200 80 170 30 S250 20 230 70" fill="none" stroke="#6b6c74" stroke-width="2.5" stroke-dasharray="6 6"/><text x="236" y="40" font-family="Courier Prime, monospace" font-size="30" fill="#6b6c74">?</text></svg>
-         <span class="rot">${T.caminho.antesRot}</span><span class="frase">${T.caminho.antes}</span></div>
-       <div class="lado depois" aria-hidden="false"><svg viewBox="0 0 300 90" aria-hidden="true"><path d="M10 70 C70 70 110 40 170 40 S260 26 290 20" fill="none" stroke="#cdbf5a" stroke-width="3.5"/><circle cx="290" cy="20" r="6" fill="#cdbf5a"/></svg>
-         <span class="rot">${T.caminho.depoisRot}</span><span class="frase">${T.caminho.depois}</span></div>
-       <span class="corte-linha" aria-hidden="true"></span>
-     </div>
-     <label for="corte" class="dica">${T.caminho.dica}</label>
-     <input type="range" id="corte" min="0" max="100" value="62">
-     <div class="pausa"></div>${ps(T.caminho.texto)}</div>`},
-  {rot:"uma semana", html:`<div class="miolo coracao-texto"><span class="num">capítulo 6</span><h2>Nem por <span class="sol">uma semana</span></h2><p class="olho">${T.semana.intro}</p>
-     <div class="semana" id="semana" aria-label="Calendário da primeira semana"></div>
-     <button id="continuar-semana">${T.semana.botao}</button>
-     <div id="semana-texto" hidden>${T.semana.texto.map((t,i)=>`<p${i===3?' class="so"':''}>${t}</p>`).join('')}<p class="so">${T.semana.so}</p></div></div>`},
-  {rot:"a gaveta", html:`<div class="miolo"><span class="num">capítulo 7</span><h2>A <span class="sol">gaveta</span></h2><p class="olho">${T.arquivo.intro}</p><div class="gaveta" id="gaveta"></div></div>`},
-  {rot:"por último", html:`<div class="miolo final"><span class="num">última página</span><p class="so">${T.final.so}</p>${ps(T.final.texto)}<p class="assina">${T.final.assina}</p>
-     <button class="btn-grande" id="recomecar" style="margin-top:26px">voltar pra capa</button><p class="colofao">${T.final.colofao}</p></div>`}
-];
+$('#txt-abre').textContent=T.abre;
+$('#txt-cedo').innerHTML=ps(T.cedo);
+$('#txt-ano').innerHTML=ps(T.ano);
+$('#txt-campo').textContent=T.campo; $('#dica-campo').textContent=T.dicaCampo;
+$('#txt-vida').innerHTML=ps(T.vida);
+$('#txt-fim').innerHTML=ps(T.fim); $('#assina').textContent=T.assina;
 
-/* livro: um capítulo por vez */
-const folhas=$('#folhas'), trilho=$('#trilho'); let atual=0;
-capitulos.forEach((c,i)=>{
-  const s=h('section',{class:'cap','aria-label':c.rot,id:'cap-'+i,tabindex:'-1'},c.html); folhas.appendChild(s);
-  const b=h('button',{'aria-label':`Ir para: ${c.rot}`}); b.onclick=()=>ir(i); trilho.appendChild(b);
-});
-const caps=[...folhas.children], marcas=[...trilho.children];
-function ir(i){
-  if(i<0||i>=caps.length) return;
-  const ant=atual; atual=i;
-  caps.forEach((c,k)=>{ c.classList.toggle('ativa',k===i); c.classList.toggle('saindo-esq',k<i); c.setAttribute('aria-hidden',k!==i); if(k!==i)c.inert=true; else c.inert=false; });
-  marcas.forEach((m,k)=>{ m.setAttribute('aria-current',k===i); if(k<=i)m.classList.add('lido'); });
-  caps[i].scrollTop=0;
-  $('#voltar').disabled=i===0; $('#seguir').disabled=i===caps.length-1;
-  $('#contador').textContent= i===0?'capa':`${i} / ${caps.length-1}`;
-  if(ant!==i) caps[i].focus({preventScroll:true});
-  const ehCampo=capitulos[i].rot==='caderno de campo';
-  if(window.campoAtivo){ if(ehCampo) window.campoPovoar(); window.campoAtivo(ehCampo); }
-}
-$('#voltar').onclick=()=>ir(atual-1); $('#seguir').onclick=()=>ir(atual+1);
-addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.closest&&e.target.closest('#campo'))return; if(e.key==='ArrowRight')ir(atual+1); if(e.key==='ArrowLeft')ir(atual-1); });
-// arrastar pro lado no celular
-let x0=null,y0=null,alvo=null;
-folhas.addEventListener('touchstart',e=>{ alvo=e.target; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
-folhas.addEventListener('touchend',e=>{ if(x0===null)return; if(alvo.closest('#comparar,#corte,#campo')){x0=null;return;}
-  const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
-  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6) ir(atual+(dx<0?1:-1)); x0=null; },{passive:true});
-ir(0);
+/* hora de verdade no topo */
+(function(){ const d=new Date(), hh=String(d.getHours()).padStart(2,'0'), mm=String(d.getMinutes()).padStart(2,'0');
+  const per=d.getHours()<5?'(ainda é madrugada. guarda pra quando acordar?)':d.getHours()<12?'de manhã':d.getHours()<18?'(tá, já é de tarde. vale igual)':'(é de noite. guarda pra amanhã cedo?)';
+  $('#hora').textContent=`${hh}:${mm} ${per}`; })();
 
-/* algumas folhas caindo, devagar */
-if(!calmoMov){ const fc=$('#folhas-caindo'), cores=['#5e8452','#8fb36a','#cdbf5a','#3d6b2c'];
-  for(let i=0;i<6;i++){ const f=h('span',{class:'folhinha'}); f.innerHTML=`<svg viewBox="0 0 20 20"><path d="M10 1 C17 5 18 14 10 19 C2 14 3 5 10 1Z M10 3 V18" fill="${cores[i%4]}" stroke="#21402a" stroke-width=".8"/></svg>`;
-    f.style.left=(Math.random()*100)+'%'; f.style.setProperty('--vx',(Math.random()*120-60)+'px'); f.style.animationDuration=(14+Math.random()*12)+'s'; f.style.animationDelay=(-Math.random()*20)+'s'; fc.appendChild(f);} }
+/* o céu clareia com a rolagem; abrir a janela dá o primeiro empurrão */
+let empurrao=0;
+function atualizaCeu(){ const max=document.documentElement.scrollHeight-innerHeight; const p=max>0?scrollY/max:1;
+  raiz.style.setProperty('--dia',Math.min(1,Math.max(empurrao,p*1.15)).toFixed(3)); }
+addEventListener('scroll',()=>requestAnimationFrame(atualizaCeu),{passive:true}); addEventListener('resize',atualizaCeu);
+$('#abrir-janela').onclick=()=>{ empurrao=.22; atualizaCeu(); $('#cedo').scrollIntoView({behavior:calmoMov?'auto':'smooth'}); };
+$('#de-novo').onclick=()=>{ empurrao=0; scrollTo({top:0,behavior:calmoMov?'auto':'smooth'}); };
+atualizaCeu();
 
-/* capa: os dois nomes */
-document.querySelectorAll('[data-nome]').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('[data-nome]').forEach(x=>x.setAttribute('aria-pressed',x===b));
-  $('#nome-nota').textContent = b.dataset.nome==='maria'?T.capa.notaMaria:T.capa.notaLara;
-});
-$('#abrir').onclick=()=>ir(1);
-$('#recomecar').onclick=()=>ir(0);
+/* manhãs contadas */
+(function(){ const tr=$('#trilha-dias'); for(let i=0;i<120;i++) tr.appendChild(h('i'));
+  const sobra=h('span',{class:'nota-mao'}); sobra.textContent='(e mais umas duzentas e tantas que não couberam aqui)'; tr.after(sobra);
+  $('#contar-hoje').onclick=e=>{ const n=$('#n-manhas'); n.textContent='366+'; const d=h('i',{class:'hoje'}); tr.appendChild(d); e.target.textContent=T.anoHoje; e.target.disabled=true; }; })();
 
-/* duas sessões */
-(function(){
-  const box=$('#ingressos');
-  [['alaska','',"SESSÃO 01"],['cyber','b',"SESSÃO 02"]].forEach(([k,cl,num])=>{
-    const d=T.duasSessoes[k];
-    const b=h('button',{class:'ingresso '+cl,'aria-expanded':'false','aria-controls':'verso-'+k},`<span class="canhoto" aria-hidden="true">${num}</span><span class="corpo"><span class="t">${d.titulo}</span><span class="s">${d.sub}</span></span>`);
-    const v=h('div',{class:'verso',id:'verso-'+k,hidden:''},ps(d.texto));
-    b.onclick=()=>{ const ab=b.getAttribute('aria-expanded')==='true'; b.setAttribute('aria-expanded',!ab); v.hidden=ab; };
-    box.append(b,v);
-  });
-})();
+/* pote de bilhetes: não repete até acabar */
+(function(){ const pote=$('#pote'), bi=$('#bilhete'); let ordem=[], k=0;
+  const embaralha=()=>{ ordem=T.bilhetes.map((_,i)=>i).sort(()=>Math.random()-.5); k=0; };
+  embaralha();
+  pote.onclick=()=>{ if(k>=ordem.length) embaralha(); const t=T.bilhetes[ordem[k++]];
+    pote.classList.remove('chacoalha'); void pote.offsetWidth; pote.classList.add('chacoalha');
+    bi.classList.remove('novo'); void bi.offsetWidth; bi.classList.add('novo');
+    bi.innerHTML=`${t}<small>bilhete ${k} de ${ordem.length}</small>`; }; })();
 
-/* Outer Banks: a fala vai chegando */
-(function(){
-  const f=$('#fala'), btn=$('#mais-fala'); let n=1;
-  const pinta=()=>{ f.innerHTML=T.obx.fala.slice(0,n).map(t=>`<span>${t} </span>`).join(''); };
-  pinta();
-  btn.onclick=()=>{ if(n<T.obx.fala.length){ n++; pinta(); } if(n>=T.obx.fala.length){ btn.hidden=true; $('#obx-depois').hidden=false; } };
-})();
+/* lista que não cobra */
+(function(){ const ul=$('#lista'), nota=$('#lista-nota');
+  T.lista.forEach((it,i)=>{ const li=h('li'); li.innerHTML=`<label><input type="checkbox" id="item-${i}"${i===0?' checked':''}><span>${it.t}</span><span class="resposta" aria-live="polite">${i===0?it.r:''}</span></label>`;
+    const cb=li.querySelector('input'), r=li.querySelector('.resposta');
+    cb.addEventListener('change',()=>{ r.textContent=cb.checked?it.r:''; const todos=[...ul.querySelectorAll('input')].every(x=>x.checked); nota.textContent=todos?T.listaNotaCheia:T.listaNota; });
+    ul.appendChild(li); });
+  nota.textContent=T.listaNota; })();
 
+/* campinho: liga o motor quando a seção aparece */
+T.campo_original=T.campo; T.campo=T.campo_motor;
 /* caderno de campo: campinho vivo */
 (function(){
   const arte={
@@ -542,37 +412,10 @@ $('#recomecar').onclick=()=>ir(0);
     ['capivara','capivara','baleia','gato','libelula','coelho','inseto','pato','sapo'].forEach(id=>criar(id)); conta(); };
 })();
 
-/* antes / depois */
-(function(){
-  const c=$('#comparar'), r=$('#corte');
-  const set=v=>c.style.setProperty('--corte',(100-v)+'%');
-  r.addEventListener('input',()=>set(r.value)); set(r.value);
-  let arr=false;
-  const mv=e=>{ if(!arr)return; const b=c.getBoundingClientRect(); const v=Math.max(0,Math.min(100,100-((e.clientX-b.left)/b.width*100))); r.value=v; set(v); };
-  c.addEventListener('pointerdown',e=>{arr=true;mv(e);}); addEventListener('pointerup',()=>arr=false); c.addEventListener('pointermove',mv);
-})();
 
-/* a semana que não acabou */
-(function(){
-  const s=$('#semana'), btn=$('#continuar-semana');
-  for(let i=1;i<=7;i++){ const d=h('span',{class:'dia riscado','aria-hidden':'true'}); d.textContent=i; s.appendChild(d); }
-  btn.onclick=()=>{
-    let n=s.children.length;
-    for(let k=0;k<14;k++){ const d=h('span',{class:'dia alem','aria-hidden':'true'}); d.style.animationDelay=(calmoMov?0:k*60)+'ms'; d.textContent=n+k+1; s.appendChild(d); }
-    const m=h('span',{class:'dia alem','aria-hidden':'true'}); m.textContent='…'; s.appendChild(m);
-    btn.hidden=true; $('#semana-texto').hidden=false;
-    s.setAttribute('aria-label','O calendário passou do sétimo dia e continuou');
-  };
-})();
-
-/* gaveta */
-(function(){
-  const g=$('#gaveta');
-  T.arquivo.itens.forEach((it,i)=>{
-    const d=h('details',{class:it.branco?'branco':''},`<summary><span class="n">${String(i+1).padStart(2,'0')}</span>${it.titulo}</summary><div class="dentro"><p>${it.texto}</p></div>`);
-    g.appendChild(d);
-  });
-})();
+(function(){ const sec=$('#campinho');
+  if('IntersectionObserver' in window){ new IntersectionObserver(es=>{ const v=es[0].isIntersecting; if(v) window.campoPovoar(); window.campoAtivo(v); },{threshold:.15}).observe(sec); }
+  else { window.campoPovoar(); window.campoAtivo(true); } })();
 </script>
 </body>
 </html>
